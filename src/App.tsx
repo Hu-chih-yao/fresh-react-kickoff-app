@@ -23,6 +23,7 @@ import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
 
+// Properly access Vite environment variables
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string;
 if (typeof API_KEY !== "string" || API_KEY === '') {
   throw new Error("set VITE_GEMINI_API_KEY in .env");
