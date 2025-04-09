@@ -1,3 +1,4 @@
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'url';
@@ -17,11 +18,11 @@ export default defineConfig({
     port: 8080
   },
   build: {
-    target: 'es2020',
+    target: 'esnext',
   },
   optimizeDeps: {
     esbuildOptions: {
-      target: 'es2020',
+      target: 'esnext',
     },
   },
 });
