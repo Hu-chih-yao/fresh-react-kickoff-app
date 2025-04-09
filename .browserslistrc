@@ -1,9 +1,6 @@
 
 # This file is used by the build system to adjust CSS and JS output to support specified browsers
 
-last 2 Chrome versions
-last 2 Firefox versions
-last 2 Safari versions
-last 2 Edge versions
+defaults
 not IE 11
-
+maintained node versions

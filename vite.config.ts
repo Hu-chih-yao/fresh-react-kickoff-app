@@ -8,7 +8,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        babelrc: false,
+        configFile: false,
+      }
+    })
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
