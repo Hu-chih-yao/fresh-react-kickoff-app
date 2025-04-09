@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -32,6 +33,7 @@ export type UseLiveAPIResults = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   volume: number;
+  error: string | null;
 };
 
 export function useLiveAPI({
@@ -49,6 +51,7 @@ export function useLiveAPI({
     model: "models/gemini-2.0-flash-exp",
   });
   const [volume, setVolume] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   // register audio for streaming server -> speakers
   useEffect(() => {
@@ -67,8 +70,11 @@ export function useLiveAPI({
   }, [audioStreamerRef]);
 
   useEffect(() => {
-    const onClose = () => {
+    const onClose = (event: CloseEvent) => {
       setConnected(false);
+      if (event.reason) {
+        setError(`Connection closed: ${event.reason}`);
+      }
     };
 
     const stopAudioStreamer = () => audioStreamerRef.current?.stop();
@@ -90,13 +96,21 @@ export function useLiveAPI({
   }, [client]);
 
   const connect = useCallback(async () => {
-    console.log(config);
+    console.log("Connecting with config:", config);
     if (!config) {
       throw new Error("config has not been set");
     }
-    client.disconnect();
-    await client.connect(config);
-    setConnected(true);
+    
+    setError(null);
+    
+    try {
+      client.disconnect();
+      await client.connect(config);
+      setConnected(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      console.error("Connection error:", err);
+    }
   }, [client, setConnected, config]);
 
   const disconnect = useCallback(async () => {
@@ -112,5 +126,6 @@ export function useLiveAPI({
     connect,
     disconnect,
     volume,
+    error,
   };
 }

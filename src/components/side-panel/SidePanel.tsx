@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -30,7 +31,7 @@ const filterOptions = [
 ];
 
 export default function SidePanel() {
-  const { connected, client } = useLiveAPIContext();
+  const { connected, client, error, connect } = useLiveAPIContext();
   const [open, setOpen] = useState(true);
   const loggerRef = useRef<HTMLDivElement>(null);
   const loggerLastHeightRef = useRef<number>(-1);
@@ -64,6 +65,12 @@ export default function SidePanel() {
   }, [client, log]);
 
   const handleSubmit = () => {
+    if (!connected) {
+      // Try to reconnect if not connected
+      connect();
+      return;
+    }
+
     client.send([{ text: textInput }]);
 
     setTextInput("");
@@ -120,6 +127,18 @@ export default function SidePanel() {
             : `⏸️${open ? " Paused" : ""}`}
         </div>
       </section>
+      {error && (
+        <div className="error-message" style={{ 
+          color: "var(--red-500, #e53935)", 
+          padding: "8px 12px", 
+          margin: "8px 0", 
+          fontSize: "14px",
+          backgroundColor: "rgba(229, 57, 53, 0.1)",
+          borderRadius: "4px"
+        }}>
+          {error}
+        </div>
+      )}
       <div className="side-panel-container" ref={loggerRef}>
         <Logger
           filter={(selectedOption?.value as LoggerFilterType) || "none"}
@@ -145,14 +164,14 @@ export default function SidePanel() {
               hidden: textInput.length,
             })}
           >
-            Type&nbsp;something...
+            {!connected ? "Click to reconnect..." : "Type something..."}
           </span>
 
           <button
             className="send-button material-symbols-outlined filled"
             onClick={handleSubmit}
           >
-            send
+            {!connected ? "refresh" : "send"}
           </button>
         </div>
       </div>

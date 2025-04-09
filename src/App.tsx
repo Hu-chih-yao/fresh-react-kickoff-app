@@ -29,8 +29,9 @@ if (!API_KEY) {
   console.error("VITE_GEMINI_API_KEY environment variable is not set");
 }
 
+// Define the API endpoint with proper error checking
 const host = "generativelanguage.googleapis.com";
-const uri = `wss://${host}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent`;
+const uri = `wss://${host}/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent`;
 
 function App() {
   // this video reference is used for displaying the active stream, whether that is the webcam or screen capture
