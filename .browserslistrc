@@ -1,4 +1,3 @@
-
 # Browserslist configuration
 # This file is used by the build system to adjust CSS and JS output to support specified browsers.
 # For more information about the format and options, see: https://github.com/browserslist/browserslist
@@ -9,3 +8,13 @@ last 2 Firefox versions
 last 2 Safari versions
 last 2 Edge versions
 not IE 11
+
+[production]
+>0.2%
+not dead
+not op_mini all
+
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version
