@@ -1,4 +1,6 @@
 
-> 0.2%
-not dead
-not op_mini all
+# This file is used by the build system to adjust CSS and JS output to support specified browsers
+
+defaults
+not IE 11
+maintained node versions
