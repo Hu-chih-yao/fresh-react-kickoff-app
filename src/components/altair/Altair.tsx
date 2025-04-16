@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2024 Google LLC
  *
@@ -76,9 +75,14 @@ const dailyMedApiDeclaration: FunctionDeclaration = {
 // Helper function to fetch medical search results
 async function fetchMedicalSearchResults(query: string) {
   try {
-    // Using the correct API key
-    const apiKey = "AIzaSyAIO6wovAUWCyvWPR1MMUH5tK84LW8Molw";
-    const cx = "029adc5d670404e1f"; // Your custom search engine ID
+    // Get API key and CX from environment variables
+    const apiKey = import.meta.env.VITE_GOOGLE_SEARCH_API_KEY;
+    const cx = import.meta.env.VITE_GOOGLE_SEARCH_CX;
+    
+    if (!apiKey || !cx) {
+      console.error("Missing search API key or search engine ID");
+      return [];
+    }
     
     console.log(`🔍 Searching for: "${query}" with engine ID: ${cx}`);
     
