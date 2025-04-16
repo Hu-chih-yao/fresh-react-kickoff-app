@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { useLoggerStore } from "../../lib/store-logger";
 import "./production-logger.scss";
 import { FaRobot, FaUser, FaCogs } from "react-icons/fa";
+import { isClientContentMessage, isServerContentMessage, isToolCallMessage, isModelTurn } from "../../multimodal-live-types";
 
 // This component displays the chat in a user-friendly way
 const ProductionLogger = () => {
@@ -58,30 +59,55 @@ const ProductionLogger = () => {
         // Message display
         processedLogs.map((log, index) => {
           // User message
-          if (log.type === 'user-input' && log.content) {
-            return (
-              <div key={index} className="conversation-entry user-entry">
-                <div className="entry-header">
-                  <div className="entry-role">
-                    <FaUser /> You
+          if (log.type === 'user-input') {
+            // Extract user message from log.message
+            let userText = "";
+            
+            if (typeof log.message === 'object' && isClientContentMessage(log.message)) {
+              // Check if there's content in the turns array
+              if (log.message.clientContent.turns.length > 0 && 
+                  log.message.clientContent.turns[0].parts.length > 0 &&
+                  log.message.clientContent.turns[0].parts[0].text) {
+                userText = log.message.clientContent.turns[0].parts[0].text;
+              }
+            }
+            
+            if (userText) {
+              return (
+                <div key={index} className="conversation-entry user-entry">
+                  <div className="entry-header">
+                    <div className="entry-role">
+                      <FaUser /> You
+                    </div>
+                    <div className="entry-time">
+                      {formatTime(log.date.getTime())}
+                    </div>
                   </div>
-                  <div className="entry-time">
-                    {formatTime(log.time)}
+                  <div className="entry-content">
+                    {userText}
                   </div>
                 </div>
-                <div className="entry-content">
-                  {log.content.text}
-                </div>
-              </div>
-            );
+              );
+            }
           }
           
           // AI response
-          if (log.type === 'model-turn' && log.content && log.content.parts) {
-            // Extract text content only
-            const textParts = log.content.parts.filter(part => part.text).map(part => part.text).join(' ');
+          if (log.type === 'model-turn') {
+            // Extract AI message from log.message
+            let aiText = "";
             
-            if (textParts.trim()) {
+            if (typeof log.message === 'object' && isServerContentMessage(log.message)) {
+              const { serverContent } = log.message;
+              if (isModelTurn(serverContent)) {
+                // Extract text from parts
+                aiText = serverContent.modelTurn.parts
+                  .filter(part => part.text)
+                  .map(part => part.text)
+                  .join(' ');
+              }
+            }
+            
+            if (aiText.trim()) {
               return (
                 <div key={index} className="conversation-entry ai-entry">
                   <div className="entry-header">
@@ -89,11 +115,11 @@ const ProductionLogger = () => {
                       <FaRobot /> Medical Assistant
                     </div>
                     <div className="entry-time">
-                      {formatTime(log.time)}
+                      {formatTime(log.date.getTime())}
                     </div>
                   </div>
                   <div className="entry-content">
-                    {textParts}
+                    {aiText}
                   </div>
                 </div>
               );
@@ -101,7 +127,7 @@ const ProductionLogger = () => {
           }
           
           // Tool/Function calls (simplified representation)
-          if ((log.type === 'function-call' || log.type === 'function-response') && log.content) {
+          if (log.type === 'function-call' || log.type === 'function-response') {
             return (
               <div key={index} className="conversation-entry tool-entry">
                 <div className="entry-content">
