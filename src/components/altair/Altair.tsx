@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2024 Google LLC
  *
@@ -40,6 +39,7 @@ const medvisorSearchDeclaration: FunctionDeclaration = {
 };
 
 // DailyMed API function declaration for medication information
+// Fixed by changing the enum property to match the required Schema type
 const dailyMedApiDeclaration: FunctionDeclaration = {
   name: "dailymed_api",
   description: "Search for FDA-approved drug information from the NIH DailyMed database",
@@ -57,7 +57,8 @@ const dailyMedApiDeclaration: FunctionDeclaration = {
       name_type: {
         type: SchemaType.STRING,
         description: "Optional: When searching drug names, specify generic, brand, or both",
-        enum: ["generic", "brand", "both"],
+        // Fix: Instead of using enum directly, we need to use format for EnumStringSchema
+        enum_values: ["generic", "brand", "both"],
       },
       page: {
         type: SchemaType.NUMBER,
