@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useLiveAPIContext } from '../../contexts/LiveAPIContext';
 import { useLoggerStore } from '../../lib/store-logger';
+import { isClientContentMessage, isModelTurn, isServerContentMessage, isToolCallMessage } from '../../multimodal-live-types';
 import "./production-logger.scss";
 
 const ProductionLogger: React.FC = () => {
@@ -17,13 +18,30 @@ const ProductionLogger: React.FC = () => {
   }, [logs]);
   
   // Filter logs to only show user messages and AI responses
-  const filteredLogs = logs
-    .filter(log => 
-      (log.userMessage && log.userMessage.text) || 
-      (log.serverContent && log.serverContent.modelTurn && 
-       log.serverContent.modelTurn.parts && 
-       log.serverContent.modelTurn.parts.some(part => part.text))
-    );
+  const filteredLogs = logs.filter(log => {
+    // User messages
+    if (isClientContentMessage(log.message)) {
+      const { clientContent } = log.message;
+      return clientContent.turns.some(turn => 
+        turn.parts && turn.parts.some(part => part.text)
+      );
+    }
+    
+    // AI responses
+    if (isServerContentMessage(log.message)) {
+      const { serverContent } = log.message;
+      return isModelTurn(serverContent) && 
+        serverContent.modelTurn.parts && 
+        serverContent.modelTurn.parts.some(part => part.text);
+    }
+    
+    // Tool calls
+    if (isToolCallMessage(log.message)) {
+      return true;
+    }
+    
+    return false;
+  });
 
   // Check if there are any messages to display
   const hasMessages = filteredLogs.length > 0;
@@ -48,25 +66,36 @@ const ProductionLogger: React.FC = () => {
         // Display actual conversation
         filteredLogs.map((log, index) => {
           // User message
-          if (log.userMessage && log.userMessage.text) {
+          if (isClientContentMessage(log.message)) {
+            const { clientContent } = log.message;
+            const userText = clientContent.turns.flatMap(turn => 
+              turn.parts.filter(part => part.text).map(part => part.text)
+            ).join("\n");
+            
+            if (!userText) return null;
+            
             return (
               <div key={`user-${index}`} className="conversation-entry user-entry">
                 <div className="entry-header">
                   <span className="entry-role">You</span>
                   <span className="entry-time">
-                    {new Date(log.timestamp).toLocaleTimeString()}
+                    {new Date(log.date).toLocaleTimeString()}
                   </span>
                 </div>
                 <div className="entry-content">
-                  {log.userMessage.text}
+                  {userText}
                 </div>
               </div>
             );
           }
           
           // AI response
-          if (log.serverContent && log.serverContent.modelTurn) {
-            const { parts } = log.serverContent.modelTurn;
+          if (isServerContentMessage(log.message)) {
+            const { serverContent } = log.message;
+            
+            if (!isModelTurn(serverContent)) return null;
+            
+            const { parts } = serverContent.modelTurn;
             
             if (!parts || !Array.isArray(parts)) return null;
             
@@ -83,7 +112,7 @@ const ProductionLogger: React.FC = () => {
                 <div className="entry-header">
                   <span className="entry-role">AI Doctor</span>
                   <span className="entry-time">
-                    {new Date(log.timestamp).toLocaleTimeString()}
+                    {new Date(log.date).toLocaleTimeString()}
                   </span>
                 </div>
                 <div className="entry-content">
@@ -96,7 +125,7 @@ const ProductionLogger: React.FC = () => {
           }
           
           // Tool use (simplified display)
-          if (log.toolCall) {
+          if (isToolCallMessage(log.message)) {
             return (
               <div key={`tool-${index}`} className="conversation-entry tool-entry">
                 <div className="entry-content">
