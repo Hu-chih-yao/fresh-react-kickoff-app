@@ -23,7 +23,6 @@ import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
-import WelcomeOverlay from "./components/welcome-overlay/WelcomeOverlay";
 
 // Safely access Vite environment variables with fallback
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
@@ -37,10 +36,10 @@ const uri = `wss://${host}/ws/google.ai.generativelanguage.v1beta.GenerativeServ
 
 function App() {
   // this video reference is used for displaying the active stream, whether that is the webcam or screen capture
+  // feel free to style as you see fit
   const videoRef = useRef<HTMLVideoElement>(null);
   // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [showWelcome, setShowWelcome] = useState(true);
 
   return (
     <div className="App">
@@ -71,10 +70,6 @@ function App() {
               </ControlTray>
             </main>
           </div>
-          
-          {showWelcome && (
-            <WelcomeOverlay onStart={() => setShowWelcome(false)} />
-          )}
         </SoapNoteProvider>
       </LiveAPIProvider>
     </div>
