@@ -2,6 +2,13 @@
 import React, { useEffect, useRef } from 'react';
 import { useLoggerStore } from '../../lib/store-logger';
 import './logger.scss';
+import { 
+  isServerContentMessage, 
+  isClientContentMessage,
+  ServerContentMessage,
+  ClientContentMessage,
+  isModelTurn
+} from '../../multimodal-live-types';
 
 const ProductionLogger: React.FC = () => {
   const { logs } = useLoggerStore();
@@ -17,7 +24,9 @@ const ProductionLogger: React.FC = () => {
   const chatLogs = logs.filter(log => {
     return (
       (log.type.includes('client.send') && !log.type.includes('setup')) || 
-      (log.type.includes('server.content') && typeof log.message === 'object' && log.message.serverContent?.modelTurn)
+      (log.type.includes('server.content') && 
+       isServerContentMessage(log.message) && 
+       isModelTurn(log.message.serverContent))
     );
   });
   
@@ -30,8 +39,9 @@ const ProductionLogger: React.FC = () => {
         if (isUser) {
           let userMessage = '';
           
-          if (typeof log.message === 'object' && log.message.clientContent) {
-            const turns = log.message.clientContent.turns || [];
+          if (isClientContentMessage(log.message)) {
+            const clientContent = log.message.clientContent;
+            const turns = clientContent.turns || [];
             if (turns.length > 0 && turns[0].parts && turns[0].parts.length > 0) {
               userMessage = turns[0].parts.map(part => part.text || '').join(' ');
             }
@@ -53,14 +63,13 @@ const ProductionLogger: React.FC = () => {
           let modelMessage = '';
           
           if (
-            typeof log.message === 'object' && 
-            log.message.serverContent && 
-            log.message.serverContent.modelTurn && 
+            isServerContentMessage(log.message) && 
+            isModelTurn(log.message.serverContent) && 
             log.message.serverContent.modelTurn.parts
           ) {
             modelMessage = log.message.serverContent.modelTurn.parts
               .filter(part => part.text && !part.functionCall)
-              .map(part => part.text)
+              .map(part => part.text || '')
               .join(' ');
           }
           
