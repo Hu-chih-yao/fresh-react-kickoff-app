@@ -24,6 +24,7 @@ import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import "./control-tray.scss";
+import { Mic, MicOff, MonitorPlay, Pause, Play, Share2, VideoIcon, VideoOff } from "lucide-react";
 
 export type ControlTrayProps = {
   videoRef: RefObject<HTMLVideoElement>;
@@ -34,8 +35,8 @@ export type ControlTrayProps = {
 
 type MediaStreamButtonProps = {
   isStreaming: boolean;
-  onIcon: string;
-  offIcon: string;
+  onIcon: ReactNode;
+  offIcon: ReactNode;
   start: () => Promise<any>;
   stop: () => any;
 };
@@ -47,11 +48,11 @@ const MediaStreamButton = memo(
   ({ isStreaming, onIcon, offIcon, start, stop }: MediaStreamButtonProps) =>
     isStreaming ? (
       <button className="action-button" onClick={stop}>
-        <span className="material-symbols-outlined">{onIcon}</span>
+        {onIcon}
       </button>
     ) : (
       <button className="action-button" onClick={start}>
-        <span className="material-symbols-outlined">{offIcon}</span>
+        {offIcon}
       </button>
     ),
 );
@@ -161,14 +162,10 @@ function ControlTray({
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
       <nav className={cn("actions-nav", { disabled: !connected })}>
         <button
-          className={cn("action-button mic-button")}
+          className={cn("action-button mic-button", { active: !muted })}
           onClick={() => setMuted(!muted)}
         >
-          {!muted ? (
-            <span className="material-symbols-outlined filled">mic</span>
-          ) : (
-            <span className="material-symbols-outlined filled">mic_off</span>
-          )}
+          {!muted ? <Mic size={20} /> : <MicOff size={20} />}
         </button>
 
         <div className="action-button no-action outlined">
@@ -181,15 +178,15 @@ function ControlTray({
               isStreaming={screenCapture.isStreaming}
               start={changeStreams(screenCapture)}
               stop={changeStreams()}
-              onIcon="cancel_presentation"
-              offIcon="present_to_all"
+              onIcon={<MonitorPlay size={20} />}
+              offIcon={<Share2 size={20} />}
             />
             <MediaStreamButton
               isStreaming={webcam.isStreaming}
               start={changeStreams(webcam)}
               stop={changeStreams()}
-              onIcon="videocam_off"
-              offIcon="videocam"
+              onIcon={<VideoOff size={20} />}
+              offIcon={<VideoIcon size={20} />}
             />
           </>
         )}
@@ -203,9 +200,7 @@ function ControlTray({
             className={cn("action-button connect-toggle", { connected })}
             onClick={connected ? disconnect : connect}
           >
-            <span className="material-symbols-outlined filled">
-              {connected ? "pause" : "play_arrow"}
-            </span>
+            {connected ? <Pause size={20} /> : <Play size={20} />}
           </button>
         </div>
         <span className="text-indicator">Streaming</span>

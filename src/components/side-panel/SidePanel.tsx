@@ -1,14 +1,13 @@
-
 import cn from "classnames";
 import { useEffect, useRef, useState } from "react";
-import { RiSidebarFoldLine, RiSidebarUnfoldLine } from "react-icons/ri";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { useLoggerStore } from "../../lib/store-logger";
 import { useSoapNote } from "../../contexts/SoapNoteContext";
-import Logger, { LoggerFilterType } from "../logger/Logger";
+import Logger from "../logger/Logger";
 import ProductionLogger from "../logger/ProductionLogger";
 import SoapNote from "../soap-notes/SoapNote";
 import "./side-panel.scss";
+import { ArrowRight, LayoutTemplate, MessageSquare, Mic, PanelRight } from "lucide-react";
 
 // Enum for the different panel tabs
 enum PanelTab {
@@ -161,11 +160,13 @@ export default function SidePanel() {
       return;
     }
 
+    if (textInput.trim() === "") return;
+
     client.send([{ text: textInput }]);
 
     setTextInput("");
     if (inputRef.current) {
-      inputRef.current.innerText = "";
+      inputRef.current.value = "";
     }
   };
 
@@ -190,11 +191,11 @@ export default function SidePanel() {
         </h2>
         {open ? (
           <button className="opener" onClick={() => setOpen(false)}>
-            <RiSidebarFoldLine color="#b4b8bb" />
+            <PanelRight size={20} />
           </button>
         ) : (
           <button className="opener" onClick={() => setOpen(true)}>
-            <RiSidebarUnfoldLine color="#b4b8bb" />
+            <PanelRight size={20} />
           </button>
         )}
       </header>
@@ -235,12 +236,12 @@ export default function SidePanel() {
       
       {error && (
         <div className="error-message" style={{ 
-          color: "var(--red-500, #e53935)", 
+          color: "var(--Red-500)", 
           padding: "8px 12px", 
           margin: "8px 0", 
           fontSize: "14px",
-          backgroundColor: "rgba(229, 57, 53, 0.1)",
-          borderRadius: "4px"
+          backgroundColor: "rgba(255, 70, 0, 0.1)",
+          borderRadius: "8px"
         }}>
           {error}
         </div>
@@ -262,6 +263,7 @@ export default function SidePanel() {
             <textarea
               className="input-area"
               ref={inputRef}
+              placeholder={!connected ? "Click to reconnect..." : "Type something..."}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -272,19 +274,12 @@ export default function SidePanel() {
               onChange={(e) => setTextInput(e.target.value)}
               value={textInput}
             ></textarea>
-            <span
-              className={cn("input-content-placeholder", {
-                hidden: textInput.length,
-              })}
-            >
-              {!connected ? "Click to reconnect..." : "Type something..."}
-            </span>
-
+            
             <button
-              className="send-button material-symbols-outlined filled"
+              className="send-button"
               onClick={handleSubmit}
             >
-              {!connected ? "refresh" : "send"}
+              {!connected ? <ArrowRight size={20} /> : <ArrowRight size={20} />}
             </button>
           </div>
         </div>
