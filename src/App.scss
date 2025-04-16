@@ -9,11 +9,11 @@
   --gray-900: #111111;
   --gray-1000: #0a0a0a;
   --border-stroke: #444444;
-  --accent-blue: rgb(161, 228, 242);
+  --accent-blue: #1EAEDB;
   --accent-blue-active-bg: #001233;
   --accent-blue-active: #98beff;
   --accent-blue-headers: #448dff;
-  --accent-green: rgb(168, 218, 181);
+  --accent-green: #0D9C53;
 
   --midnight-blue: rgb(0, 18, 51);
   --blue-30: #99beff;
@@ -26,7 +26,7 @@
   scrollbar-color: var(--gray-600) var(--gray-900);
   scrollbar-width: thin;
 
-  --font-family: "Space Mono", monospace;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* */
   --Neutral-00: #000;
@@ -50,10 +50,25 @@
   --Red-500: #ff4600;
   --Red-600: #e03c00;
   --Red-700: #bd3000;
+  
+  /* Medical theme colors */
+  --Med-Blue-100: #e3f2fd;
+  --Med-Blue-500: #1EAEDB;
+  --Med-Blue-700: #0288d1;
+  --Med-Green-100: #e8f5e9;
+  --Med-Green-500: #0D9C53;
+  --Med-Green-700: #2e7d32;
+  --Med-Purple-100: #f3e5f5;
+  --Med-Purple-500: #9747FF;
+  --Med-Purple-700: #7935cc;
+  
+  --radius: 0.75rem;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 body {
-  font-family: "Space Mono", monospace;
+  font-family: var(--font-family);
   background: var(--Neutral-30);
 }
 
@@ -65,30 +80,6 @@ body {
       "GRAD" 0,
       "opsz" 24;
   }
-}
-
-.space-mono-regular {
-  font-family: "Space Mono", monospace;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.space-mono-bold {
-  font-family: "Space Mono", monospace;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.space-mono-regular-italic {
-  font-family: "Space Mono", monospace;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.space-mono-bold-italic {
-  font-family: "Space Mono", monospace;
-  font-weight: 700;
-  font-style: italic;
 }
 
 .hidden {
@@ -119,15 +110,23 @@ body {
   display: flex;
   height: 100vh;
   width: 100vw;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 
   a,
   a:visited,
   a:active {
-    color: var(--gray-300);
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--accent-blue-light);
+    }
   }
 
   .disabled {
     pointer-events: none;
+    opacity: 0.7;
 
     >* {
       pointer-events: none;
@@ -144,6 +143,8 @@ body {
     gap: 1rem;
     max-width: 100%;
     overflow: hidden;
+    padding: 0.5rem;
+    background: linear-gradient(160deg, var(--Neutral-10) 0%, var(--Neutral-5) 100%);
   }
 
   .main-app-area {
@@ -151,6 +152,8 @@ body {
     flex: 1;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    position: relative;
   }
 
   .function-call {
@@ -160,6 +163,41 @@ body {
     height: 50%;
     overflow-y: auto;
   }
+  
+  .connection-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    border-radius: 2rem;
+    z-index: 10;
+    
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      
+      &.connected {
+        background-color: var(--Green-500);
+        box-shadow: 0 0 8px var(--Green-500);
+      }
+      
+      &.disconnected {
+        background-color: var(--gray-500);
+      }
+    }
+    
+    .status-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--Neutral-90);
+    }
+  }
 }
 
 /* video player */
@@ -168,4 +206,35 @@ body {
   max-width: 90%;
   border-radius: 32px;
   max-height: fit-content;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  
+  &:not(.hidden) {
+    animation: fadeIn 0.5s ease-out;
+  }
+}
+
+/* Helper classes */
+.fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

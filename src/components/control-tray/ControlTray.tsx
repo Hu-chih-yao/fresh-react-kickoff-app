@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -36,6 +37,7 @@ type MediaStreamButtonProps = {
   isStreaming: boolean;
   onIcon: string;
   offIcon: string;
+  tooltip: string;
   start: () => Promise<any>;
   stop: () => any;
 };
@@ -44,14 +46,16 @@ type MediaStreamButtonProps = {
  * button used for triggering webcam or screen-capture
  */
 const MediaStreamButton = memo(
-  ({ isStreaming, onIcon, offIcon, start, stop }: MediaStreamButtonProps) =>
+  ({ isStreaming, onIcon, offIcon, tooltip, start, stop }: MediaStreamButtonProps) =>
     isStreaming ? (
       <button className="action-button" onClick={stop}>
         <span className="material-symbols-outlined">{onIcon}</span>
+        <span className="tooltip-text">{tooltip}</span>
       </button>
     ) : (
       <button className="action-button" onClick={start}>
         <span className="material-symbols-outlined">{offIcon}</span>
+        <span className="tooltip-text">{tooltip}</span>
       </button>
     ),
 );
@@ -71,6 +75,7 @@ function ControlTray({
   const [muted, setMuted] = useState(false);
   const renderCanvasRef = useRef<HTMLCanvasElement>(null);
   const connectButtonRef = useRef<HTMLButtonElement>(null);
+  const [showStartBanner, setShowStartBanner] = useState(true);
 
   const { client, connected, connect, disconnect, volume } =
     useLiveAPIContext();
@@ -80,6 +85,7 @@ function ControlTray({
       connectButtonRef.current.focus();
     }
   }, [connected]);
+  
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--volume",
@@ -155,61 +161,93 @@ function ControlTray({
 
     videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
   };
+  
+  const handleConnect = async () => {
+    if (connected) {
+      await disconnect();
+    } else {
+      setShowStartBanner(false);
+      await connect();
+    }
+  };
 
   return (
     <section className="control-tray">
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
-      <nav className={cn("actions-nav", { disabled: !connected })}>
-        <button
-          className={cn("action-button mic-button")}
-          onClick={() => setMuted(!muted)}
-        >
-          {!muted ? (
-            <span className="material-symbols-outlined filled">mic</span>
-          ) : (
-            <span className="material-symbols-outlined filled">mic_off</span>
-          )}
+      
+      {showStartBanner && !connected && (
+        <button className="start-consultation" onClick={handleConnect}>
+          <span className="material-symbols-outlined">play_arrow</span>
+          Start Consultation
         </button>
+      )}
+      
+      {(!showStartBanner || connected) && (
+        <>
+          <nav className={cn("actions-nav", { disabled: !connected })}>
+            <div className="action-group">
+              <button
+                className={cn("action-button mic-button")}
+                onClick={() => setMuted(!muted)}
+              >
+                {!muted ? (
+                  <span className="material-symbols-outlined filled">mic</span>
+                ) : (
+                  <span className="material-symbols-outlined filled">mic_off</span>
+                )}
+                <span className="tooltip-text">
+                  {muted ? "Unmute Microphone" : "Mute Microphone"}
+                </span>
+              </button>
 
-        <div className="action-button no-action outlined">
-          <AudioPulse volume={volume} active={connected} hover={false} />
-        </div>
+              <div className="action-button no-action outlined">
+                <AudioPulse volume={volume} active={connected} hover={false} />
+                <span className="tooltip-text">Audio Level</span>
+              </div>
+            </div>
 
-        {supportsVideo && (
-          <>
-            <MediaStreamButton
-              isStreaming={screenCapture.isStreaming}
-              start={changeStreams(screenCapture)}
-              stop={changeStreams()}
-              onIcon="cancel_presentation"
-              offIcon="present_to_all"
-            />
-            <MediaStreamButton
-              isStreaming={webcam.isStreaming}
-              start={changeStreams(webcam)}
-              stop={changeStreams()}
-              onIcon="videocam_off"
-              offIcon="videocam"
-            />
-          </>
-        )}
-        {children}
-      </nav>
+            {supportsVideo && (
+              <div className="action-group">
+                <MediaStreamButton
+                  isStreaming={screenCapture.isStreaming}
+                  start={changeStreams(screenCapture)}
+                  stop={changeStreams()}
+                  onIcon="cancel_presentation"
+                  offIcon="present_to_all"
+                  tooltip={screenCapture.isStreaming ? "Stop Screen Sharing" : "Share Screen"}
+                />
+                <MediaStreamButton
+                  isStreaming={webcam.isStreaming}
+                  start={changeStreams(webcam)}
+                  stop={changeStreams()}
+                  onIcon="videocam_off"
+                  offIcon="videocam"
+                  tooltip={webcam.isStreaming ? "Turn Off Camera" : "Turn On Camera"}
+                />
+              </div>
+            )}
+            {children}
+          </nav>
 
-      <div className={cn("connection-container", { connected })}>
-        <div className="connection-button-container">
-          <button
-            ref={connectButtonRef}
-            className={cn("action-button connect-toggle", { connected })}
-            onClick={connected ? disconnect : connect}
-          >
-            <span className="material-symbols-outlined filled">
-              {connected ? "pause" : "play_arrow"}
-            </span>
-          </button>
-        </div>
-        <span className="text-indicator">Streaming</span>
-      </div>
+          <div className={cn("connection-container", { connected })}>
+            <div className="connection-button-container">
+              <button
+                ref={connectButtonRef}
+                className={cn("action-button connect-toggle", { connected })}
+                onClick={handleConnect}
+              >
+                <span className="material-symbols-outlined filled">
+                  {connected ? "pause" : "play_arrow"}
+                </span>
+                <span className="tooltip-text">
+                  {connected ? "Pause Consultation" : "Start Consultation"}
+                </span>
+              </button>
+            </div>
+            <span className="text-indicator">Streaming</span>
+          </div>
+        </>
+      )}
     </section>
   );
 }
