@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -24,6 +25,7 @@ import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import "./control-tray.scss";
+import { FaMicrophone, FaMicrophoneSlash, FaVideo, FaVideoSlash, FaDesktop, FaPlayCircle, FaPauseCircle } from 'react-icons/fa';
 
 export type ControlTrayProps = {
   videoRef: RefObject<HTMLVideoElement>;
@@ -34,8 +36,9 @@ export type ControlTrayProps = {
 
 type MediaStreamButtonProps = {
   isStreaming: boolean;
-  onIcon: string;
-  offIcon: string;
+  label: string;
+  enabledIcon: React.ReactNode;
+  disabledIcon: React.ReactNode;
   start: () => Promise<any>;
   stop: () => any;
 };
@@ -44,16 +47,18 @@ type MediaStreamButtonProps = {
  * button used for triggering webcam or screen-capture
  */
 const MediaStreamButton = memo(
-  ({ isStreaming, onIcon, offIcon, start, stop }: MediaStreamButtonProps) =>
-    isStreaming ? (
-      <button className="action-button" onClick={stop}>
-        <span className="material-symbols-outlined">{onIcon}</span>
+  ({ isStreaming, label, enabledIcon, disabledIcon, start, stop }: MediaStreamButtonProps) => (
+    <div className="media-stream-control">
+      <button 
+        className={cn("action-button", { active: isStreaming })} 
+        onClick={isStreaming ? stop : start}
+        title={isStreaming ? `Stop ${label}` : `Start ${label}`}
+      >
+        {isStreaming ? enabledIcon : disabledIcon}
       </button>
-    ) : (
-      <button className="action-button" onClick={start}>
-        <span className="material-symbols-outlined">{offIcon}</span>
-      </button>
-    ),
+      <span className="button-label">{label}</span>
+    </div>
+  ),
 );
 
 function ControlTray({
@@ -80,6 +85,7 @@ function ControlTray({
       connectButtonRef.current.focus();
     }
   }, [connected]);
+  
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--volume",
@@ -159,20 +165,36 @@ function ControlTray({
   return (
     <section className="control-tray">
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
-      <nav className={cn("actions-nav", { disabled: !connected })}>
+      
+      <div className="connection-container">
         <button
-          className={cn("action-button mic-button")}
-          onClick={() => setMuted(!muted)}
+          ref={connectButtonRef}
+          className={cn("connect-button", { connected })}
+          onClick={connected ? disconnect : connect}
+          title={connected ? "Pause session" : "Start session"}
         >
-          {!muted ? (
-            <span className="material-symbols-outlined filled">mic</span>
-          ) : (
-            <span className="material-symbols-outlined filled">mic_off</span>
-          )}
+          {connected ? <FaPauseCircle /> : <FaPlayCircle />}
         </button>
+        <span className="connection-label">
+          {connected ? "Connected" : "Start Session"}
+        </span>
+      </div>
+      
+      <nav className={cn("actions-nav", { disabled: !connected })}>
+        <div className="media-stream-control">
+          <button
+            className={cn("action-button mic-button", { muted })}
+            onClick={() => setMuted(!muted)}
+            title={muted ? "Unmute microphone" : "Mute microphone"}
+          >
+            {muted ? <FaMicrophoneSlash /> : <FaMicrophone />}
+          </button>
+          <span className="button-label">Microphone</span>
+        </div>
 
-        <div className="action-button no-action outlined">
+        <div className="action-button no-action outlined viz-meter">
           <AudioPulse volume={volume} active={connected} hover={false} />
+          <span className="button-label">Voice Level</span>
         </div>
 
         {supportsVideo && (
@@ -181,35 +203,29 @@ function ControlTray({
               isStreaming={screenCapture.isStreaming}
               start={changeStreams(screenCapture)}
               stop={changeStreams()}
-              onIcon="cancel_presentation"
-              offIcon="present_to_all"
+              enabledIcon={<FaDesktop />}
+              disabledIcon={<FaDesktop />}
+              label="Screen Share"
             />
             <MediaStreamButton
               isStreaming={webcam.isStreaming}
               start={changeStreams(webcam)}
               stop={changeStreams()}
-              onIcon="videocam_off"
-              offIcon="videocam"
+              enabledIcon={<FaVideoSlash />}
+              disabledIcon={<FaVideo />}
+              label="Camera"
             />
           </>
         )}
         {children}
       </nav>
 
-      <div className={cn("connection-container", { connected })}>
-        <div className="connection-button-container">
-          <button
-            ref={connectButtonRef}
-            className={cn("action-button connect-toggle", { connected })}
-            onClick={connected ? disconnect : connect}
-          >
-            <span className="material-symbols-outlined filled">
-              {connected ? "pause" : "play_arrow"}
-            </span>
-          </button>
+      {connected && (
+        <div className="session-status">
+          <div className="status-indicator"></div>
+          <span>Session Active</span>
         </div>
-        <span className="text-indicator">Streaming</span>
-      </div>
+      )}
     </section>
   );
 }
