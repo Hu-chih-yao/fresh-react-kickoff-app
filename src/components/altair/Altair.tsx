@@ -75,7 +75,7 @@ Safety and Privacy
 Start the Conversation
 
 Begin by saying: "Hello! I'm here to help you with your health concerns. What symptoms are you experiencing today?"
-"`',
+"`
           },
         ],
       },
