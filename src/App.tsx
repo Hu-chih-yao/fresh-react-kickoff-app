@@ -23,7 +23,6 @@ import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
-import WelcomeOverlay from "./components/welcome/WelcomeOverlay";
 
 // Safely access Vite environment variables with fallback
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
@@ -41,45 +40,36 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [showWelcome, setShowWelcome] = useState(true);
-
-  const handleGetStarted = () => {
-    setShowWelcome(false);
-  };
 
   return (
     <div className="App">
       <LiveAPIProvider url={uri} apiKey={API_KEY}>
         <SoapNoteProvider>
-          {showWelcome ? (
-            <WelcomeOverlay onGetStarted={handleGetStarted} />
-          ) : (
-            <div className="streaming-console">
-              <SidePanel />
-              <main>
-                <div className="main-app-area">
-                  {/* APP goes here */}
-                  <Altair />
-                  <video
-                    className={cn("stream", {
-                      hidden: !videoRef.current || !videoStream,
-                    })}
-                    ref={videoRef}
-                    autoPlay
-                    playsInline
-                  />
-                </div>
+          <div className="streaming-console">
+            <SidePanel />
+            <main>
+              <div className="main-app-area">
+                {/* APP goes here */}
+                <Altair />
+                <video
+                  className={cn("stream", {
+                    hidden: !videoRef.current || !videoStream,
+                  })}
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                />
+              </div>
 
-                <ControlTray
-                  videoRef={videoRef}
-                  supportsVideo={true}
-                  onVideoStreamChange={setVideoStream}
-                >
-                  {/* put your own buttons here */}
-                </ControlTray>
-              </main>
-            </div>
-          )}
+              <ControlTray
+                videoRef={videoRef}
+                supportsVideo={true}
+                onVideoStreamChange={setVideoStream}
+              >
+                {/* put your own buttons here */}
+              </ControlTray>
+            </main>
+          </div>
         </SoapNoteProvider>
       </LiveAPIProvider>
     </div>

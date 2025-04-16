@@ -1,4 +1,3 @@
-
 :root {
   --text: white;
   --gray-200: #b4b8bb;
@@ -23,13 +22,6 @@
 
   --background: var(--gray-900);
   --color: var(--text);
-
-  /* Medical theme colors */
-  --medical-blue: #1f94ff;
-  --medical-blue-dark: #0f3557;
-  --medical-green: #0d9c53;
-  --medical-light-blue: #e1f5fe;
-  --medical-light-gray: #f5f7fa;
 
   scrollbar-color: var(--gray-600) var(--gray-900);
   scrollbar-width: thin;
@@ -63,11 +55,6 @@
 body {
   font-family: "Space Mono", monospace;
   background: var(--Neutral-30);
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
 }
 
 .material-symbols-outlined {
@@ -80,7 +67,6 @@ body {
   }
 }
 
-// Font styles
 .space-mono-regular {
   font-family: "Space Mono", monospace;
   font-weight: 400;
@@ -105,7 +91,6 @@ body {
   font-style: italic;
 }
 
-// Utility classes
 .hidden {
   display: none;
 }
@@ -126,12 +111,7 @@ body {
   flex-direction: column;
 }
 
-// App Styles
-.App {
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-}
+@media (prefers-reduced-motion: no-preference) {}
 
 .streaming-console {
   background: var(--Neutral-5);
@@ -139,7 +119,6 @@ body {
   display: flex;
   height: 100vh;
   width: 100vw;
-  position: relative;
 
   a,
   a:visited,
@@ -172,8 +151,6 @@ body {
     flex: 1;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    position: relative;
   }
 
   .function-call {
@@ -190,47 +167,5 @@ body {
   flex-grow: 1;
   max-width: 90%;
   border-radius: 32px;
-  max-height: 70vh;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border: 2px solid var(--Blue-500);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: var(--Blue-800);
-  }
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  .streaming-console {
-    flex-direction: column;
-    
-    main {
-      height: 60vh;
-    }
-    
-    .stream {
-      max-height: 40vh;
-    }
-  }
-}
-
-// Custom scrollbar
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--Neutral-10);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--Neutral-30);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--Neutral-50);
+  max-height: fit-content;
 }

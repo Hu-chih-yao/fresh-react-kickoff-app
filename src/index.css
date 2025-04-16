@@ -7,110 +7,16 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* Medical theme colors */
-  --medical-blue: #1f94ff;
-  --medical-blue-dark: #0f3557;
-  --medical-green: #0d9c53;
-  --medical-light-blue: #e1f5fe;
-  --medical-light-gray: #f5f7fa;
-}
-
-html {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  scroll-behavior: smooth;
-}
-
-*, *:before, *:after {
-  box-sizing: inherit;
 }
 
 body {
   margin: 0;
-  padding: 0;
   display: flex;
   min-width: 320px;
   min-height: 100vh;
-  overflow: hidden;
-  font-family: 'Space Mono', monospace;
-  background-color: #111111;
-  color: #e1e2e3;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-p {
-  margin-top: 0;
-  margin-bottom: 1rem;
 }
 
 #root {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-  
-  &:focus {
-    outline: none;
-  }
-}
-
-/* Add a pulsing animation for notifications */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.pulse {
-  animation: pulse 1.5s infinite;
-}
-
-/* Tooltip styles */
-[data-tooltip] {
-  position: relative;
-}
-
-[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 6px 10px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-[data-tooltip]:hover::after {
-  opacity: 1;
 }
