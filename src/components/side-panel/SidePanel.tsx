@@ -7,7 +7,7 @@ import Logger from "../logger/Logger";
 import ProductionLogger from "../logger/ProductionLogger";
 import SoapNote from "../soap-notes/SoapNote";
 import "./side-panel.scss";
-import { ArrowRight, LayoutTemplate, MessageSquare, Mic, PanelRight } from "lucide-react";
+import { ArrowRight, MessageCircle, MessageSquare, PanelRight } from "lucide-react";
 
 // Enum for the different panel tabs
 enum PanelTab {
@@ -186,7 +186,7 @@ export default function SidePanel() {
   return (
     <div className={`side-panel ${open ? "open" : ""}`}>
       <header className="top">
-        <h2>
+        <h2 className="panel-title">
           {activeTab === PanelTab.CHAT ? 'Chat History' : 'Medical Note'}
         </h2>
         {open ? (
@@ -205,13 +205,13 @@ export default function SidePanel() {
           className={`tab-button ${activeTab === PanelTab.CHAT ? 'active' : ''}`}
           onClick={() => handleTabChange(PanelTab.CHAT)}
         >
-          Chat
+          <span>Chat</span>
         </button>
         <button 
           className={`tab-button ${activeTab === PanelTab.SOAP_NOTE ? 'active' : ''} ${notePulse ? 'pulse' : ''}`}
           onClick={() => handleTabChange(PanelTab.SOAP_NOTE)}
         >
-          Medical Note
+          <span>Medical Note</span>
           {hasChanges && activeTab !== PanelTab.SOAP_NOTE && (
             <span className="notification-dot"></span>
           )}
@@ -235,14 +235,7 @@ export default function SidePanel() {
       </section>
       
       {error && (
-        <div className="error-message" style={{ 
-          color: "var(--Red-500)", 
-          padding: "8px 12px", 
-          margin: "8px 0", 
-          fontSize: "14px",
-          backgroundColor: "rgba(255, 70, 0, 0.1)",
-          borderRadius: "8px"
-        }}>
+        <div className="error-message">
           {error}
         </div>
       )}
@@ -279,7 +272,7 @@ export default function SidePanel() {
               className="send-button"
               onClick={handleSubmit}
             >
-              {!connected ? <ArrowRight size={20} /> : <ArrowRight size={20} />}
+              <ArrowRight size={20} />
             </button>
           </div>
         </div>

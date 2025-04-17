@@ -25,7 +25,7 @@ import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import "./control-tray.scss";
-import { Mic, MicOff, MonitorPlay, Pause, Play, Share2, VideoIcon, VideoOff, MessageCircle } from "lucide-react";
+import { Mic, MicOff, MonitorPlay, Pause, Play, Share2, VideoIcon, VideoOff, MessageCircle, ChevronRight } from "lucide-react";
 
 export type ControlTrayProps = {
   videoRef: RefObject<HTMLVideoElement>;
@@ -74,6 +74,9 @@ function ControlTray({
   const renderCanvasRef = useRef<HTMLCanvasElement>(null);
   const connectButtonRef = useRef<HTMLButtonElement>(null);
   const [initialView, setInitialView] = useState(true);
+  const [showMobileInput, setShowMobileInput] = useState(false);
+  const [textInput, setTextInput] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { client, connected, connect, disconnect, volume } =
     useLiveAPIContext();
@@ -164,6 +167,28 @@ function ControlTray({
     setInitialView(false);
     connect();
   };
+  
+  const handleTextSubmit = () => {
+    if (!connected) {
+      connect();
+      return;
+    }
+
+    if (textInput.trim() === "") return;
+
+    client.send([{ text: textInput }]);
+
+    setTextInput("");
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+    
+    // Hide mobile input after sending
+    setShowMobileInput(false);
+  };
+  
+  // Check if we're on a mobile device
+  const isMobile = window.innerWidth <= 768;
 
   if (initialView) {
     return (
@@ -186,55 +211,106 @@ function ControlTray({
       </section>
     );
   }
+  
+  // For mobile, show a simplified interface with just text input when showMobileInput is true
+  if (isMobile && showMobileInput) {
+    return (
+      <section className="control-tray mobile-input-view">
+        <div className="mobile-input-container">
+          <input
+            type="text"
+            ref={inputRef}
+            placeholder="Type your message..."
+            value={textInput}
+            onChange={(e) => setTextInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleTextSubmit();
+              }
+            }}
+          />
+          <button 
+            className="send-button"
+            onClick={handleTextSubmit}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className={cn("control-tray", { connected })}>
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
-      <nav className={cn("actions-nav", { disabled: !connected })}>
-        <button
-          className={cn("action-button mic-button", { active: !muted })}
-          onClick={() => setMuted(!muted)}
-        >
-          {!muted ? <Mic size={20} /> : <MicOff size={20} />}
-        </button>
-
-        <div className="action-button no-action outlined">
-          <AudioPulse volume={volume} active={connected} hover={false} />
-        </div>
-
-        {supportsVideo && (
-          <>
-            <MediaStreamButton
-              isStreaming={screenCapture.isStreaming}
-              start={changeStreams(screenCapture)}
-              stop={changeStreams()}
-              onIcon={<MonitorPlay size={20} />}
-              offIcon={<Share2 size={20} />}
-            />
-            <MediaStreamButton
-              isStreaming={webcam.isStreaming}
-              start={changeStreams(webcam)}
-              stop={changeStreams()}
-              onIcon={<VideoOff size={20} />}
-              offIcon={<VideoIcon size={20} />}
-            />
-          </>
-        )}
-        {children}
-      </nav>
-
-      <div className={cn("connection-container", { connected })}>
-        <div className="connection-button-container">
-          <button
-            ref={connectButtonRef}
-            className={cn("action-button connect-toggle", { connected })}
-            onClick={connected ? disconnect : connect}
-          >
-            {connected ? <Pause size={20} /> : <Play size={20} />}
+      
+      {isMobile ? (
+        // Mobile condensed view - just a button to open the input
+        <div className="mobile-chat-button" onClick={() => setShowMobileInput(true)}>
+          <input
+            type="text"
+            readOnly
+            className="fake-input"
+            placeholder="Click to reconnect..."
+            onClick={() => {
+              if (!connected) connect();
+              setShowMobileInput(true);
+            }}
+          />
+          <button className="mobile-chat-icon">
+            <ChevronRight size={20} />
           </button>
         </div>
-        <span className="text-indicator">Streaming</span>
-      </div>
+      ) : (
+        // Desktop view with full controls
+        <>
+          <nav className={cn("actions-nav", { disabled: !connected })}>
+            <button
+              className={cn("action-button mic-button", { active: !muted })}
+              onClick={() => setMuted(!muted)}
+            >
+              {!muted ? <Mic size={20} /> : <MicOff size={20} />}
+            </button>
+
+            <div className="action-button no-action outlined">
+              <AudioPulse volume={volume} active={connected} hover={false} />
+            </div>
+
+            {supportsVideo && (
+              <>
+                <MediaStreamButton
+                  isStreaming={screenCapture.isStreaming}
+                  start={changeStreams(screenCapture)}
+                  stop={changeStreams()}
+                  onIcon={<MonitorPlay size={20} />}
+                  offIcon={<Share2 size={20} />}
+                />
+                <MediaStreamButton
+                  isStreaming={webcam.isStreaming}
+                  start={changeStreams(webcam)}
+                  stop={changeStreams()}
+                  onIcon={<VideoOff size={20} />}
+                  offIcon={<VideoIcon size={20} />}
+                />
+              </>
+            )}
+            {children}
+          </nav>
+
+          <div className={cn("connection-container", { connected })}>
+            <div className="connection-button-container">
+              <button
+                ref={connectButtonRef}
+                className={cn("action-button connect-toggle", { connected })}
+                onClick={connected ? disconnect : connect}
+              >
+                {connected ? <Pause size={20} /> : <Play size={20} />}
+              </button>
+            </div>
+            <span className="text-indicator">Streaming</span>
+          </div>
+        </>
+      )}
     </section>
   );
 }

@@ -1,3 +1,4 @@
+
 :root {
   --text: #333333;
   --primary-purple: #9b87f5;
@@ -61,6 +62,10 @@
   --Red-500: #ff4600;
   --Red-600: #e03c00;
   --Red-700: #bd3000;
+  
+  /* Gradient Colors */
+  --gradient-blue: #1EAEDB;
+  --gradient-purple: #9b87f5;
 }
 
 body {
@@ -191,6 +196,7 @@ body {
   border-radius: 16px;
   padding: 24px;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   
   h3 {
     color: var(--Purple-500);
@@ -202,5 +208,17 @@ body {
     color: var(--Neutral-80);
     font-size: 14px;
     line-height: 1.5;
+  }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .streaming-console main {
+    padding-bottom: 70px; /* Make space for the control tray */
+  }
+  
+  .stream {
+    max-width: 100%;
+    border-radius: 16px;
   }
 }
