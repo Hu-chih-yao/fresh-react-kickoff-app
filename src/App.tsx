@@ -23,7 +23,6 @@ import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
-import { MessageSquare, Play } from "lucide-react";
 
 // Safely access Vite environment variables with fallback
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
@@ -40,7 +39,6 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [showWelcome, setShowWelcome] = useState(true);
 
   return (
     <div className="App">
@@ -60,27 +58,6 @@ function App() {
                   autoPlay
                   playsInline
                 />
-                
-                {/* Welcome Overlay */}
-                {showWelcome && (
-                  <div className="welcome-overlay">
-                    <div className="welcome-content">
-                      <h1>Welcome to your Medical Consultation</h1>
-                      <p>This is a secure space to discuss your health concerns with an AI medical assistant.</p>
-                      <p>Your conversation will be used to generate a comprehensive medical note.</p>
-                      <ul>
-                        <li><MessageSquare size={16} /> Start chatting by typing in the side panel</li>
-                        <li><Play size={16} /> Press the purple play button to begin streaming</li>
-                      </ul>
-                      <button 
-                        className="start-button"
-                        onClick={() => setShowWelcome(false)}
-                      >
-                        Got it
-                      </button>
-                    </div>
-                  </div>
-                )}
               </div>
 
               <ControlTray

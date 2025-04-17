@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -24,7 +25,7 @@ import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import "./control-tray.scss";
-import { Mic, MicOff, MonitorPlay, Pause, Play, Share2, VideoIcon, VideoOff } from "lucide-react";
+import { Mic, MicOff, MonitorPlay, Pause, Play, Share2, VideoIcon, VideoOff, MessageCircle } from "lucide-react";
 
 export type ControlTrayProps = {
   videoRef: RefObject<HTMLVideoElement>;
@@ -72,6 +73,7 @@ function ControlTray({
   const [muted, setMuted] = useState(false);
   const renderCanvasRef = useRef<HTMLCanvasElement>(null);
   const connectButtonRef = useRef<HTMLButtonElement>(null);
+  const [initialView, setInitialView] = useState(true);
 
   const { client, connected, connect, disconnect, volume } =
     useLiveAPIContext();
@@ -81,6 +83,7 @@ function ControlTray({
       connectButtonRef.current.focus();
     }
   }, [connected]);
+  
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--volume",
@@ -156,9 +159,36 @@ function ControlTray({
 
     videoStreams.filter((msr) => msr !== next).forEach((msr) => msr.stop());
   };
+  
+  const handleConnect = () => {
+    setInitialView(false);
+    connect();
+  };
+
+  if (initialView) {
+    return (
+      <section className="control-tray initial">
+        <canvas style={{ display: "none" }} ref={renderCanvasRef} />
+        <div className="initial-tray">
+          <div className="welcome-message">
+            <MessageCircle size={24} />
+            <span>Connect with AI Doctor</span>
+          </div>
+          
+          <button
+            ref={connectButtonRef}
+            className="action-button connect-toggle start-button"
+            onClick={handleConnect}
+          >
+            <Play size={20} />
+          </button>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="control-tray">
+    <section className={cn("control-tray", { connected })}>
       <canvas style={{ display: "none" }} ref={renderCanvasRef} />
       <nav className={cn("actions-nav", { disabled: !connected })}>
         <button
