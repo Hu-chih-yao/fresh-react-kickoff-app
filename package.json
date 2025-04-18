@@ -32,7 +32,8 @@
     "start-https": "vite --https",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "build:dev": "vite build --mode development"
   },
   "eslintConfig": {
     "extends": [
