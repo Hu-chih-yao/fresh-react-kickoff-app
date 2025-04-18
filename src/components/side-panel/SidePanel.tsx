@@ -86,7 +86,6 @@ export default function SidePanel() {
       
       // Also try to extract information from user and AI messages to update the SOAP note
       // This is for when the AI doesn't explicitly call the function but we still want to track info
-      // This is for when the AI doesn't explicitly call the function but we still want to track info
       if (logData) {
         // Extract from user messages
         if (logData.userMessage && typeof logData.userMessage.text === 'string') {
@@ -187,16 +186,20 @@ export default function SidePanel() {
   return (
     <div className={`side-panel ${open ? "open" : ""}`}>
       <header className="top">
-        <h2>{activeTab === PanelTab.CHAT ? 'Chat History' : 'Medical Note'}</h2>
-        <button 
-          className="opener" 
-          onClick={() => setOpen(!open)}
-          aria-label={open ? "Close sidebar" : "Open sidebar"}
-        >
-          <PanelRight size={20} />
-        </button>
+        <h2>
+          {activeTab === PanelTab.CHAT ? 'Chat History' : 'Medical Note'}
+        </h2>
+        {open ? (
+          <button className="opener" onClick={() => setOpen(false)}>
+            <PanelRight size={20} />
+          </button>
+        ) : (
+          <button className="opener" onClick={() => setOpen(true)}>
+            <PanelRight size={20} />
+          </button>
+        )}
       </header>
-
+      
       <section className="tab-selector">
         <button 
           className={`tab-button ${activeTab === PanelTab.CHAT ? 'active' : ''}`}
@@ -214,31 +217,64 @@ export default function SidePanel() {
           )}
         </button>
       </section>
-
+      
+      <section className="indicators">
+        <div className="dev-mode-toggle">
+          <button 
+            className={`dev-toggle-btn ${devMode ? 'active' : ''}`} 
+            onClick={toggleDevMode}
+          >
+            {devMode ? "Developer Mode" : "Simple Mode"}
+          </button>
+        </div>
+        <div className={cn("streaming-indicator", { connected })}>
+          {connected
+            ? `🟢${open ? " Connected" : ""}`
+            : `⚪${open ? " Disconnected" : ""}`}
+        </div>
+      </section>
+      
+      {error && (
+        <div className="error-message" style={{ 
+          color: "var(--Red-500)", 
+          padding: "8px 12px", 
+          margin: "8px 0", 
+          fontSize: "14px",
+          backgroundColor: "rgba(255, 70, 0, 0.1)",
+          borderRadius: "8px"
+        }}>
+          {error}
+        </div>
+      )}
+      
       <div className="side-panel-container" ref={loggerRef}>
         {activeTab === PanelTab.CHAT ? (
+          // Show chat interface
           devMode ? <Logger filter="none" /> : <ProductionLogger />
         ) : (
+          // Show SOAP note interface
           <SoapNote isVisible={true} />
         )}
       </div>
-
+      
       {activeTab === PanelTab.CHAT && (
         <div className={cn("input-container", { disabled: !connected })}>
           <div className="input-content">
             <textarea
               className="input-area"
               ref={inputRef}
-              placeholder={!connected ? "Click to connect..." : "Message AI Doctor..."}
+              placeholder={!connected ? "Click to reconnect..." : "Type something..."}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
+                  e.stopPropagation();
                   handleSubmit();
                 }
               }}
               onChange={(e) => setTextInput(e.target.value)}
               value={textInput}
-            />
+            ></textarea>
+            
             <button
               className="send-button"
               onClick={handleSubmit}
