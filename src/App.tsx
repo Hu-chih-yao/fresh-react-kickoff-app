@@ -21,6 +21,7 @@ import { SoapNoteProvider } from "./contexts/SoapNoteContext";
 import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
+import LandingPage from "./components/landing/LandingPage";
 import cn from "classnames";
 import { MessageCircle, Play } from "lucide-react";
 
@@ -42,19 +43,7 @@ function App() {
   const [showApp, setShowApp] = useState(false);
 
   if (!showApp) {
-    return (
-      <div className="initial-view">
-        <div className="welcome-container">
-          <MessageCircle size={48} className="welcome-icon" />
-          <h1>Connect with AI Doctor</h1>
-          <p>Start your medical consultation now</p>
-          <button className="start-button" onClick={() => setShowApp(true)}>
-            <Play size={24} />
-            <span>Start Consultation</span>
-          </button>
-        </div>
-      </div>
-    );
+    return <LandingPage onStartConsultation={() => setShowApp(true)} />;
   }
 
   return (
