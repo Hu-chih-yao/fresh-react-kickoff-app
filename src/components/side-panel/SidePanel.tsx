@@ -7,7 +7,7 @@ import Logger from "../logger/Logger";
 import ProductionLogger from "../logger/ProductionLogger";
 import SoapNote from "../soap-notes/SoapNote";
 import "./side-panel.scss";
-import { ArrowRight, LayoutTemplate, MessageSquare, Mic, PanelRight } from "lucide-react";
+import { ArrowRight, Settings, LayoutTemplate, MessageSquare, Mic, PanelRight } from "lucide-react";
 
 // Enum for the different panel tabs
 enum PanelTab {
@@ -27,6 +27,7 @@ export default function SidePanel() {
 
   const [textInput, setTextInput] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [devMode, setDevMode] = useState(false);
 
   //scroll the log to the bottom when new logs come in
   useEffect(() => {
@@ -184,15 +185,18 @@ export default function SidePanel() {
         <h2>
           {activeTab === PanelTab.CHAT ? 'Chat History' : 'Medical Note'}
         </h2>
-        {open ? (
-          <button className="opener" onClick={() => setOpen(false)}>
+        <div className="header-controls">
+          <button 
+            className="dev-mode-button"
+            onClick={() => setDevMode(!devMode)}
+            title={devMode ? "Developer Mode" : "Production Mode"}
+          >
+            <Settings size={16} className={devMode ? "active" : ""} />
+          </button>
+          <button className="opener" onClick={() => setOpen(!open)}>
             <PanelRight size={20} />
           </button>
-        ) : (
-          <button className="opener" onClick={() => setOpen(true)}>
-            <PanelRight size={20} />
-          </button>
-        )}
+        </div>
       </header>
       
       <section className="tab-selector">
@@ -228,7 +232,7 @@ export default function SidePanel() {
       
       <div className="side-panel-container" ref={loggerRef}>
         {activeTab === PanelTab.CHAT ? (
-          <ProductionLogger />
+          devMode ? <Logger filter="none" /> : <ProductionLogger />
         ) : (
           <SoapNote isVisible={true} />
         )}
