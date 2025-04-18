@@ -1,27 +1,11 @@
-
-/**
- * Copyright 2024 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "./App.scss";
 import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import { SoapNoteProvider } from "./contexts/SoapNoteContext";
 import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
+import LandingPage from "./components/landing/LandingPage";
 import cn from "classnames";
 
 // Safely access Vite environment variables with fallback
@@ -44,11 +28,11 @@ function App() {
     <div className="App">
       <LiveAPIProvider url={uri} apiKey={API_KEY}>
         <SoapNoteProvider>
+          <LandingPage />
           <div className="streaming-console">
             <SidePanel />
             <main>
               <div className="main-app-area">
-                {/* APP goes here */}
                 <Altair />
                 <video
                   className={cn("stream", {
