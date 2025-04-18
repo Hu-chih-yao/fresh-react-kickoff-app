@@ -1,18 +1,28 @@
 .side-panel {
-  background: var(--Neutral-00);
+  background: linear-gradient(135deg, #1EAEDB 0%, #9b87f5 100%);
   width: 40px; /* when closed */
   display: flex;
   flex-direction: column;
   height: 100vh;
-  transition: all 0.2s ease-in;
+  transition: all 0.3s ease-in;
   border-right: 1px solid var(--Neutral-20);
-  color: var(--text);
+  color: var(--Neutral-00);
   font-family: var(--font-family);
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
   line-height: 160%;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  
+  @media (max-width: 768px) {
+    position: fixed;
+    left: -100%;
+    width: 100%;
+    z-index: 50;
+    
+    &.open {
+      left: 0;
+    }
+  }
 
   .react-select {
     background: var(--Neutral-10);
@@ -66,25 +76,19 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px 12px 25px;
-    border-bottom: 1px solid var(--Neutral-20);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
     h2 {
-      position: relative;
-      color: var(--Purple-500);
+      color: var(--Neutral-00);
       font-family: var(--font-family);
       font-size: 21px;
       font-style: normal;
       font-weight: 500;
       line-height: 16px;
-
       opacity: 0;
       display: none;
       left: -100%;
-      transition:
-        opacity 0.2s ease-in,
-        left 0.2s ease-in,
-        display 0.2s ease-in;
-      transition-behavior: allow-discrete;
+      transition: all 0.2s ease-in;
 
       @starting-style {
         left: 0%;
@@ -136,50 +140,41 @@
     padding: 12px 25px;
     justify-content: space-between;
     align-items: center;
-    gap: 21px;
+    gap: 12px;
+    flex-wrap: wrap;
     
     .dev-mode-toggle {
+      order: 2; /* Move to right on mobile */
+      margin-left: auto;
+      
+      @media (min-width: 768px) {
+        order: 1;
+      }
+      
       .dev-toggle-btn {
-        background: var(--Neutral-5);
-        border: 1px solid var(--Neutral-20);
-        color: var(--Neutral-80);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--Neutral-00);
         padding: 6px 12px;
         border-radius: 20px;
         font-size: 13px;
         cursor: pointer;
         transition: all 0.2s ease;
-        font-weight: 500;
         
         &:hover, &.active {
-          background: var(--Neutral-10);
-          color: var(--Neutral-90);
+          background: rgba(255, 255, 255, 0.2);
         }
       }
     }
     
     .streaming-indicator {
-      user-select: none;
-      border-radius: 20px;
-      border: 1px solid var(--Neutral-20);
-      background: var(--Neutral-5);
-      display: flex;
-      width: 136px;
-      height: 30px;
-      padding-left: 4px;
-      justify-content: center;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-      text-align: center;
-      font-family: var(--font-family);
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-      transition: width 0.2s ease-in;
-
-      &.connected {
-        color: var(--Green-500);
+      order: 1; /* Move to left on mobile */
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--Neutral-00);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      
+      @media (min-width: 768px) {
+        order: 2;
       }
     }
   }
@@ -306,8 +301,11 @@
 }
 
 .side-panel.open {
-  width: 400px;
-  height: 100vh;
+  width: min(400px, 90vw);
+    
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .side-panel-responses,
@@ -496,5 +494,20 @@
   }
   100% {
     background-color: transparent;
+  }
+}
+
+// Add transition to main content
+.streaming-console main {
+  transition: margin-left 0.3s ease-in;
+  
+  @media (min-width: 768px) {
+    margin-left: 40px;
+  }
+  
+  .side-panel.open + & {
+    @media (min-width: 768px) {
+      margin-left: min(400px, 90vw);
+    }
   }
 }

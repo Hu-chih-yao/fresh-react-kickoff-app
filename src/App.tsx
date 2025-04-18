@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2024 Google LLC
  *
@@ -23,6 +22,7 @@ import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
 import cn from "classnames";
+import { MessageCircle, Play } from "lucide-react";
 
 // Safely access Vite environment variables with fallback
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
@@ -39,6 +39,23 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const [showApp, setShowApp] = useState(false);
+
+  if (!showApp) {
+    return (
+      <div className="initial-view">
+        <div className="welcome-container">
+          <MessageCircle size={48} className="welcome-icon" />
+          <h1>Connect with AI Doctor</h1>
+          <p>Start your medical consultation now</p>
+          <button className="start-button" onClick={() => setShowApp(true)}>
+            <Play size={24} />
+            <span>Start Consultation</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
