@@ -7,7 +7,7 @@ import Logger from "../logger/Logger";
 import ProductionLogger from "../logger/ProductionLogger";
 import SoapNote from "../soap-notes/SoapNote";
 import "./side-panel.scss";
-import { ArrowRight, LayoutTemplate, MessageSquare, Mic, PanelRight } from "lucide-react";
+import { ArrowRight, LayoutTemplate, MessageSquare, Mic, PanelRight, Settings } from "lucide-react";
 
 // Enum for the different panel tabs
 enum PanelTab {
@@ -174,7 +174,6 @@ export default function SidePanel() {
     setDevMode(!devMode);
   };
   
-  // Handle tab change
   const handleTabChange = (tab: PanelTab) => {
     setActiveTab(tab);
     // Clear notification when switching to the SOAP note tab
@@ -200,39 +199,44 @@ export default function SidePanel() {
         )}
       </header>
       
-      <section className="tab-selector">
-        <button 
-          className={`tab-button ${activeTab === PanelTab.CHAT ? 'active' : ''}`}
-          onClick={() => handleTabChange(PanelTab.CHAT)}
-        >
-          Chat
-        </button>
-        <button 
-          className={`tab-button ${activeTab === PanelTab.SOAP_NOTE ? 'active' : ''} ${notePulse ? 'pulse' : ''}`}
-          onClick={() => handleTabChange(PanelTab.SOAP_NOTE)}
-        >
-          Medical Note
-          {hasChanges && activeTab !== PanelTab.SOAP_NOTE && (
-            <span className="notification-dot"></span>
-          )}
-        </button>
-      </section>
-      
-      <section className="indicators">
-        <div className="dev-mode-toggle">
-          <button 
-            className={`dev-toggle-btn ${devMode ? 'active' : ''}`} 
-            onClick={toggleDevMode}
-          >
-            {devMode ? "Developer Mode" : "Simple Mode"}
-          </button>
-        </div>
-        <div className={cn("streaming-indicator", { connected })}>
-          {connected
-            ? `🟢${open ? " Connected" : ""}`
-            : `⚪${open ? " Disconnected" : ""}`}
-        </div>
-      </section>
+      {open && (
+        <>
+          <section className="tab-selector">
+            <button 
+              className={`tab-button ${activeTab === PanelTab.CHAT ? 'active' : ''}`}
+              onClick={() => handleTabChange(PanelTab.CHAT)}
+            >
+              Chat
+            </button>
+            <button 
+              className={`tab-button ${activeTab === PanelTab.SOAP_NOTE ? 'active' : ''} ${notePulse ? 'pulse' : ''}`}
+              onClick={() => handleTabChange(PanelTab.SOAP_NOTE)}
+            >
+              Medical Note
+              {hasChanges && activeTab !== PanelTab.SOAP_NOTE && (
+                <span className="notification-dot"></span>
+              )}
+            </button>
+          </section>
+          
+          <section className="indicators">
+            <div className="dev-mode-toggle">
+              <button 
+                className={`dev-toggle-btn ${devMode ? 'active' : ''}`} 
+                onClick={toggleDevMode}
+              >
+                <Settings size={16} className="settings-icon" />
+                {devMode ? "Developer Mode" : "Simple Mode"}
+              </button>
+            </div>
+            <div className={cn("streaming-indicator", { connected })}>
+              {connected
+                ? `🟢 Connected`
+                : `⚪ Disconnected`}
+            </div>
+          </section>
+        </>
+      )}
       
       {error && (
         <div className="error-message" style={{ 
@@ -249,15 +253,13 @@ export default function SidePanel() {
       
       <div className="side-panel-container" ref={loggerRef}>
         {activeTab === PanelTab.CHAT ? (
-          // Show chat interface
           devMode ? <Logger filter="none" /> : <ProductionLogger />
         ) : (
-          // Show SOAP note interface
           <SoapNote isVisible={true} />
         )}
       </div>
       
-      {activeTab === PanelTab.CHAT && (
+      {activeTab === PanelTab.CHAT && open && (
         <div className={cn("input-container", { disabled: !connected })}>
           <div className="input-content">
             <textarea
