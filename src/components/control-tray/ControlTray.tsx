@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2024 Google LLC
  *
@@ -25,7 +24,19 @@ import { useWebcam } from "../../hooks/use-webcam";
 import { AudioRecorder } from "../../lib/audio-recorder";
 import AudioPulse from "../audio-pulse/AudioPulse";
 import "./control-tray.scss";
-import { Mic, MicOff, MonitorPlay, Pause, Play, Share2, VideoIcon, VideoOff, MessageCircle } from "lucide-react";
+import { 
+  Mic, 
+  MicOff, 
+  MonitorPlay, 
+  Pause, 
+  Play, 
+  Share2, 
+  VideoIcon, 
+  VideoOff, 
+  MessageCircle,
+  Search,
+  Lightbulb 
+} from "lucide-react";
 
 export type ControlTrayProps = {
   videoRef: RefObject<HTMLVideoElement>;
