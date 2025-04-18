@@ -1,6 +1,6 @@
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-family);
   line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
@@ -14,6 +14,9 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
+  font-family: var(--font-family);
+  background: var(--background);
+  color: var(--text);
 }
 
 #root {

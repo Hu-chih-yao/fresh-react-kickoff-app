@@ -1,73 +1,63 @@
 :root {
-  --text: #333333;
-  --primary-purple: #9b87f5;
-  --light-purple: #f0ebff;
-  --gray-200: #eaeaea;
-  --gray-300: #999999;
-  --gray-500: #666666;
+  --text: #1D1D1F;
+  --gray-200: #b4b8bb;
+  --gray-300: #86868B;
+  --gray-500: #5f6368;
   --gray-600: #444444;
-  --gray-700: #3a3a3a;
-  --gray-800: #2a2a2a;
-  --gray-900: #1a1a1a;
+  --gray-700: #202020;
+  --gray-800: #171717;
+  --gray-900: #111111;
   --gray-1000: #0a0a0a;
-  --border-stroke: #e0e0e0;
-  --accent-blue: #a1e4f2;
-  --accent-blue-active-bg: #f0f7ff;
-  --accent-blue-active: #6d8eff;
-  --accent-blue-headers: #9b87f5;
-  --accent-green: #a8dab5;
+  --border-stroke: #DCDEE4;
+  --accent-blue: rgb(161, 228, 242);
+  --accent-blue-active-bg: #001233;
+  --accent-blue-active: #98beff;
+  --accent-blue-headers: #448dff;
+  --accent-green: rgb(168, 218, 181);
 
   --midnight-blue: rgb(0, 18, 51);
   --blue-30: #99beff;
 
   --accent-red: #ff4600;
 
-  --background: #ffffff;
-  --panel-background: #ffffff;
+  --background: #FFFFFF;
   --color: var(--text);
 
-  scrollbar-color: var(--gray-300) var(--gray-200);
+  scrollbar-color: var(--gray-600) var(--background);
   scrollbar-width: thin;
 
-  --font-family: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* */
-  --Neutral-00: #ffffff;
-  --Neutral-5: #f8f9fa;
-  --Neutral-10: #f0f2f5;
-  --Neutral-15: #e8eaed;
-  --Neutral-20: #dadce0;
-  --Neutral-30: #bdc1c6;
-  --Neutral-50: #9aa0a6;
-  --Neutral-60: #80868b;
-  --Neutral-80: #5f6368;
-  --Neutral-90: #3c4043;
+  --Neutral-00: #000;
+  --Neutral-5: #FFFFFF;
+  --Neutral-10: #F5F5F7;
+  --Neutral-15: #EFEFEF;
+  --Neutral-20: #E8E8E8;
+  --Neutral-30: #DCDEE4;
+  --Neutral-50: #707577;
+  --Neutral-60: #888d8f;
+  --Neutral-80: #c3c6c7;
+  --Neutral-90: #e1e2e3;
 
   --Green-500: #0d9c53;
   --Green-700: #025022;
 
-  --Blue-500: #1f94ff;
+  --Blue-500: #3E7BFA;
   --Blue-800: #0f3557;
-
-  --Purple-100: #f0ebff;
-  --Purple-200: #e5dbff;
-  --Purple-300: #d5c8ff;
-  --Purple-400: #c5b3ff;
-  --Purple-500: #9b87f5;
-  --Purple-600: #8a6df5;
-  --Purple-700: #7e69ab;
 
   --Red-400: #ff9c7a;
   --Red-500: #ff4600;
   --Red-600: #e03c00;
   --Red-700: #bd3000;
+  
+  --primary-purple: #8A2BE2;
 }
 
 body {
   font-family: var(--font-family);
   background: var(--background);
-  margin: 0;
-  padding: 0;
+  color: var(--text);
 }
 
 .material-symbols-outlined {
@@ -127,20 +117,17 @@ body {
 @media (prefers-reduced-motion: no-preference) {}
 
 .streaming-console {
-  display: none; // Hide by default
-  
-  &.active {
-    display: flex; // Show when active
-    background: var(--background);
-    color: var(--text);
-    height: 100vh;
-    width: 100vw;
-  }
+  background: var(--background);
+  color: var(--text);
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  border-top: 1px solid var(--border-stroke);
 
   a,
   a:visited,
   a:active {
-    color: var(--Purple-500);
+    color: var(--primary-purple);
   }
 
   .disabled {
@@ -168,7 +155,6 @@ body {
     flex: 1;
     align-items: center;
     justify-content: center;
-    position: relative;
   }
 
   .function-call {
@@ -184,27 +170,8 @@ body {
 .stream {
   flex-grow: 1;
   max-width: 90%;
-  border-radius: 24px;
-  max-height: fit-content;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-/* For ProductionLogger empty state */
-.production-logger-container .empty-conversation .welcome-message {
-  background-color: var(--Purple-100);
   border-radius: 16px;
-  padding: 24px;
-  text-align: center;
-  
-  h3 {
-    color: var(--Purple-500);
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-  
-  p {
-    color: var(--Neutral-80);
-    font-size: 14px;
-    line-height: 1.5;
-  }
+  max-height: fit-content;
+  border: 1px solid var(--border-stroke);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
