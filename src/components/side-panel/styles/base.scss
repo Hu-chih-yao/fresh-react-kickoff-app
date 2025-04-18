@@ -29,4 +29,14 @@
   .hidden {
     display: none !important;
   }
+
+  .error-message {
+    color: var(--Red-500);
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 14px;
+    background-color: rgba(255, 70, 0, 0.1);
+    border-radius: 8px;
+  }
 }
+

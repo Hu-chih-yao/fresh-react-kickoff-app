@@ -22,7 +22,6 @@ export default function SidePanel() {
   const loggerLastHeightRef = useRef<number>(-1);
   const { log, logs } = useLoggerStore();
   const { updateSoapNote, hasChanges } = useSoapNote();
-  const [devMode, setDevMode] = useState(false);
   const [activeTab, setActiveTab] = useState<PanelTab>(PanelTab.CHAT);
   const [notePulse, setNotePulse] = useState(false);
 
@@ -170,10 +169,6 @@ export default function SidePanel() {
     }
   };
 
-  const toggleDevMode = () => {
-    setDevMode(!devMode);
-  };
-  
   // Handle tab change
   const handleTabChange = (tab: PanelTab) => {
     setActiveTab(tab);
@@ -218,22 +213,6 @@ export default function SidePanel() {
         </button>
       </section>
       
-      <section className="indicators">
-        <div className="dev-mode-toggle">
-          <button 
-            className={`dev-toggle-btn ${devMode ? 'active' : ''}`} 
-            onClick={toggleDevMode}
-          >
-            {devMode ? "Developer Mode" : "Simple Mode"}
-          </button>
-        </div>
-        <div className={cn("streaming-indicator", { connected })}>
-          {connected
-            ? `🟢${open ? " Connected" : ""}`
-            : `⚪${open ? " Disconnected" : ""}`}
-        </div>
-      </section>
-      
       {error && (
         <div className="error-message" style={{ 
           color: "var(--Red-500)", 
@@ -249,10 +228,8 @@ export default function SidePanel() {
       
       <div className="side-panel-container" ref={loggerRef}>
         {activeTab === PanelTab.CHAT ? (
-          // Show chat interface
-          devMode ? <Logger filter="none" /> : <ProductionLogger />
+          <ProductionLogger />
         ) : (
-          // Show SOAP note interface
           <SoapNote isVisible={true} />
         )}
       </div>
@@ -279,7 +256,7 @@ export default function SidePanel() {
               className="send-button"
               onClick={handleSubmit}
             >
-              {!connected ? <ArrowRight size={20} /> : <ArrowRight size={20} />}
+              <ArrowRight size={20} />
             </button>
           </div>
         </div>
