@@ -18,8 +18,7 @@
     
     .welcome-message {
       text-align: center;
-      background: linear-gradient(135deg, rgba(30, 174, 219, 0.1) 0%, rgba(155, 135, 245, 0.1) 100%);
-      border: 1px solid rgba(155, 135, 245, 0.2);
+      background-color: var(--Purple-100);
       padding: 32px;
       border-radius: 16px;
       max-width: 85%;
@@ -28,7 +27,7 @@
         margin-top: 0;
         margin-bottom: 16px;
         font-size: 20px;
-        color: #9b87f5;
+        color: var(--Purple-500);
         font-weight: 500;
       }
       
@@ -45,30 +44,6 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin-bottom: 16px;
-    
-    &.user-entry {
-      align-self: flex-end;
-      max-width: 85%;
-      
-      .entry-content {
-        background: linear-gradient(135deg, rgba(30, 174, 219, 0.1) 0%, rgba(155, 135, 245, 0.1) 100%);
-        border: 1px solid rgba(155, 135, 245, 0.2);
-        color: var(--Neutral-90);
-        margin-left: auto;
-      }
-    }
-    
-    &.ai-entry {
-      align-self: flex-start;
-      max-width: 85%;
-      
-      .entry-content {
-        background-color: var(--Neutral-5);
-        border: 1px solid var(--Neutral-20);
-        color: var(--Neutral-90);
-      }
-    }
     
     .entry-header {
       display: flex;
@@ -77,9 +52,8 @@
       margin-bottom: 4px;
       
       .entry-role {
-        font-size: 13px;
         font-weight: 500;
-        color: #9b87f5;
+        font-size: 14px;
       }
       
       .entry-time {
@@ -92,7 +66,71 @@
       border-radius: 16px;
       padding: 12px 16px;
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.5;
+      
+      p {
+        margin: 0 0 8px 0;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+    
+    &.user-entry {
+      align-self: flex-end;
+      
+      .entry-header {
+        .entry-role {
+          color: var(--Purple-500);
+        }
+      }
+      
+      .entry-content {
+        background-color: var(--Purple-100);
+        border: 1px solid var(--Purple-200);
+        color: var(--Neutral-90);
+      }
+    }
+    
+    &.ai-entry {
+      align-self: flex-start;
+      
+      .entry-header {
+        .entry-role {
+          color: var(--Purple-600);
+        }
+      }
+      
+      .entry-content {
+        background-color: var(--Neutral-10);
+        border: 1px solid var(--Neutral-20);
+        color: var(--Neutral-90);
+      }
+    }
+    
+    &.tool-entry {
+      align-self: center;
+      width: 90%;
+      margin: 6px 0;
+      
+      .entry-content {
+        background-color: var(--Neutral-5);
+        border: 1px dashed var(--Neutral-20);
+        color: var(--Neutral-80);
+        padding: 8px 12px;
+      }
+      
+      .friendly-tool-message {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .tool-icon {
+          color: var(--Purple-500);
+          font-size: 16px;
+        }
+      }
     }
   }
   
@@ -101,37 +139,55 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, rgba(30, 174, 219, 0.1) 0%, rgba(155, 135, 245, 0.1) 100%);
-    border: 1px solid rgba(155, 135, 245, 0.2);
-    border-radius: 20px;
+    padding: 8px 12px;
+    background-color: var(--Neutral-5);
+    border-radius: 16px;
     
     .typing-indicator {
       display: flex;
       align-items: center;
-      gap: 4px;
       
       span {
-        width: 6px;
         height: 6px;
-        background-color: #9b87f5;
+        width: 6px;
+        margin: 0 1px;
+        background-color: var(--Purple-400);
         border-radius: 50%;
-        animation: typing 1.4s infinite;
+        display: inline-block;
+        opacity: 0.4;
         
-        &:nth-child(2) { animation-delay: 0.2s; }
-        &:nth-child(3) { animation-delay: 0.4s; }
+        &:nth-child(1) {
+          animation: typing 1.4s infinite;
+        }
+        
+        &:nth-child(2) {
+          animation: typing 1.4s 0.2s infinite;
+        }
+        
+        &:nth-child(3) {
+          animation: typing 1.4s 0.4s infinite;
+        }
       }
     }
     
     .typing-text {
       font-size: 13px;
       color: var(--Neutral-80);
-      margin-left: 4px;
     }
   }
 }
 
 @keyframes typing {
-  0%, 100% { transform: translateY(0); opacity: 0.4; }
-  50% { transform: translateY(-4px); opacity: 1; }
+  0% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
 }
