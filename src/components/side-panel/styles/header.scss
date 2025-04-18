@@ -1,0 +1,50 @@
+
+.side-panel {
+  .top {
+    display: flex;
+    width: calc(100% - 45px);
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px 12px 25px;
+    border-bottom: var(--sidebar-border);
+
+    h2 {
+      position: relative;
+      color: var(--Purple-500);
+      font-family: var(--font-family);
+      font-size: 21px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 16px;
+      opacity: 0;
+      display: none;
+      left: -100%;
+      transition: var(--sidebar-transition);
+      transition-behavior: allow-discrete;
+
+      @starting-style {
+        left: 0%;
+        opacity: 1;
+      }
+    }
+  }
+
+  &.open .top h2 {
+    left: 0%;
+    display: block;
+    opacity: 1;
+  }
+
+  .opener {
+    height: 30px;
+    transition: transform 0.2s ease-in;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--Purple-500);
+
+    &:not(.open) {
+      transform: translate(-50%, 0);
+    }
+  }
+}

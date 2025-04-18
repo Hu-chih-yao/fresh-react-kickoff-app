@@ -1,0 +1,70 @@
+
+.side-panel {
+  .input-container {
+    height: 60px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-top: var(--sidebar-border);
+    padding: 14px 25px;
+    overflow: hidden;
+
+    .input-content {
+      position: relative;
+      background: var(--Neutral-5);
+      border: 1px solid var(--Neutral-20);
+      height: 40px;
+      border-radius: 24px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+
+      .send-button {
+        position: relative;
+        background: none;
+        border: 0;
+        color: var(--Purple-500);
+        cursor: pointer;
+        transition: color 0.1s ease-in;
+        z-index: 2;
+        margin-right: 12px;
+
+        &:hover {
+          color: var(--Purple-700);
+        }
+      }
+
+      .input-area {
+        background: none;
+        color: var(--text);
+        position: relative;
+        z-index: 2;
+        width: calc(100% - 60px);
+        height: 24px;
+        outline: none;
+        flex: 1;
+        word-break: break-word;
+        overflow: auto;
+        padding: 8px 12px;
+        border: 0;
+        resize: none;
+        font-family: var(--font-family);
+        font-size: 14px;
+      }
+
+      .input-content-placeholder {
+        position: absolute;
+        left: 12px;
+        top: 0;
+        display: flex;
+        align-items: center;
+        z-index: 1;
+        height: 100%;
+        width: 100%;
+        pointer-events: none;
+        user-select: none;
+        color: var(--Neutral-60);
+        font-size: 14px;
+      }
+    }
+  }
+}

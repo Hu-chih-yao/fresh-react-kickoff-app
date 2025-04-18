@@ -1,0 +1,46 @@
+
+.side-panel {
+  .tab-selector {
+    display: flex;
+    padding: 0;
+    border-bottom: var(--sidebar-border);
+    
+    .tab-button {
+      flex: 1;
+      background: none;
+      color: var(--Neutral-60);
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 12px 0;
+      cursor: pointer;
+      position: relative;
+      transition: var(--sidebar-transition);
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 500;
+      
+      &:hover {
+        color: var(--Purple-500);
+      }
+      
+      &.active {
+        color: var(--Purple-500);
+        border-bottom-color: var(--Purple-500);
+      }
+      
+      .notification-dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        background-color: var(--Green-500);
+        border-radius: 50%;
+      }
+      
+      &.pulse {
+        animation: tab-pulse 1.5s infinite;
+      }
+    }
+  }
+}
