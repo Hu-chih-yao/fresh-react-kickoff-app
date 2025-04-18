@@ -15,7 +15,6 @@
  */
 
 import cn from "classnames";
-
 import { memo, ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { UseMediaStreamResult } from "../../hooks/use-media-stream-mux";
@@ -183,31 +182,25 @@ function ControlTray({
         <div className="initial-tray">
           <div className="welcome-message">
             <MessageCircle size={32} />
-            <span>How can I assist you today?</span>
+            <span>How are you feeling today?</span>
           </div>
           
-          <div className="input-container">
-            <input 
-              type="text"
-              className="search-field"
-              placeholder="Ask me anything..."
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleConnect();
-                }
-              }}
-            />
-            <div className="actions-row">
-              <button className="action-pill">
-                <Search size={16} />
-                DeepSearch
-              </button>
-              <button className="action-pill">
-                <Lightbulb size={16} />
-                Think
-              </button>
-            </div>
+          <div className="suggestions">
+            <button className="suggestion-pill" onClick={handleConnect}>
+              I have a headache
+            </button>
+            <button className="suggestion-pill" onClick={handleConnect}>
+              My stomach hurts
+            </button>
+            <button className="suggestion-pill" onClick={handleConnect}>
+              I feel dizzy
+            </button>
           </div>
+
+          <button className="connect-button" onClick={handleConnect}>
+            <Play size={24} />
+            Start Consultation
+          </button>
         </div>
       </section>
     );
