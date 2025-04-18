@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useRef } from "react";
 import "./App.scss";
 import { LiveAPIProvider } from "./contexts/LiveAPIContext";
 import { SoapNoteProvider } from "./contexts/SoapNoteContext";
@@ -19,17 +20,16 @@ const host = "generativelanguage.googleapis.com";
 const uri = `wss://${host}/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent`;
 
 function App() {
-  // this video reference is used for displaying the active stream, whether that is the webcam or screen capture
   const videoRef = useRef<HTMLVideoElement>(null);
-  // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  const [showConsole, setShowConsole] = useState(false);
 
   return (
     <div className="App">
       <LiveAPIProvider url={uri} apiKey={API_KEY}>
         <SoapNoteProvider>
-          <LandingPage />
-          <div className="streaming-console">
+          {!showConsole && <LandingPage onStart={() => setShowConsole(true)} />}
+          <div className={cn("streaming-console", { active: showConsole })}>
             <SidePanel />
             <main>
               <div className="main-app-area">

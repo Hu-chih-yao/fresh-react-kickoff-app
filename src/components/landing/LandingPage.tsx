@@ -1,9 +1,13 @@
 
 import React from 'react';
-import { MessageSquare, Shield, BookOpen, ArrowRight, Clock, Navigation } from 'lucide-react';
+import { Clock, Shield, BookOpen, ArrowRight, Navigation } from 'lucide-react';
 import './landing-page.scss';
 
-const LandingPage = () => {
+interface LandingPageProps {
+  onStart: () => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
   return (
     <div className="landing-page">
       <header className="hero">
@@ -12,8 +16,7 @@ const LandingPage = () => {
             <span className="gradient-text">Not a Doctor</span>
           </h1>
           <h2>
-            <span>AI-Powered</span><br />
-            <span>Telemedicine.</span><br />
+            <span className="black-text">AI-Powered<br />Telemedicine.</span><br />
             <span className="gradient-text">Human-Like Care.</span>
           </h2>
           
@@ -23,7 +26,7 @@ const LandingPage = () => {
           </p>
 
           <div className="cta-buttons">
-            <button className="primary-button">
+            <button className="primary-button" onClick={onStart}>
               Start Consultation
               <ArrowRight size={20} />
             </button>

@@ -1,7 +1,7 @@
-
 .landing-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #ffffff 0%, #f8f5ff 100%);
+  overflow-x: hidden;
   
   .hero {
     min-height: 100vh;
@@ -10,44 +10,51 @@
     justify-content: center;
     padding: 2rem;
     text-align: center;
+    position: relative;
     
     .hero-content {
       max-width: 800px;
       margin: 0 auto;
+      padding: 1rem;
     }
 
     h1 {
-      font-size: 3.5rem;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
       margin-bottom: 1rem;
       
-      @media (max-width: 768px) {
-        font-size: 2.5rem;
+      .gradient-text {
+        background: linear-gradient(90deg, #9b87f5 0%, #6d8eff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
     }
 
     h2 {
-      font-size: 2.5rem;
+      font-size: clamp(2rem, 4vw, 2.5rem);
       line-height: 1.2;
       margin-bottom: 2rem;
       
-      @media (max-width: 768px) {
-        font-size: 2rem;
+      .black-text {
+        color: #1A1F2C;
+      }
+      
+      .gradient-text {
+        background: linear-gradient(90deg, #9b87f5 0%, #6d8eff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
     }
 
-    .gradient-text {
-      background: linear-gradient(90deg, var(--Purple-500) 0%, var(--Blue-500) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
     .subtitle {
-      font-size: 1.25rem;
-      color: var(--Neutral-80);
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: #666666;
       margin-bottom: 2rem;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      line-height: 1.6;
     }
 
     .cta-buttons {
@@ -55,10 +62,7 @@
       gap: 1rem;
       justify-content: center;
       margin-bottom: 2rem;
-
-      @media (max-width: 480px) {
-        flex-direction: column;
-      }
+      flex-wrap: wrap;
 
       button {
         padding: 1rem 2rem;
@@ -69,9 +73,10 @@
         align-items: center;
         gap: 0.5rem;
         transition: all 0.2s ease;
+        min-width: 200px;
 
         &.primary-button {
-          background: linear-gradient(90deg, var(--Purple-500) 0%, var(--Blue-500) 100%);
+          background: linear-gradient(90deg, #9b87f5 0%, #6d8eff 100%);
           color: white;
           border: none;
 
@@ -83,12 +88,31 @@
 
         &.secondary-button {
           background: transparent;
-          border: 2px solid var(--Purple-500);
-          color: var(--Purple-500);
+          border: 2px solid #9b87f5;
+          color: #9b87f5;
 
           &:hover {
-            background: var(--Purple-100);
+            background: rgba(155, 135, 245, 0.1);
           }
+        }
+      }
+    }
+
+    .disclaimer-banner {
+      background: rgba(155, 135, 245, 0.1);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin-top: 2rem;
+
+      p {
+        color: #666666;
+        font-size: 0.875rem;
+        line-height: 1.6;
+
+        strong {
+          color: #9b87f5;
+          display: block;
+          margin-bottom: 0.5rem;
         }
       }
     }
@@ -250,6 +274,42 @@
           text-decoration: underline;
         }
       }
+    }
+  }
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  .landing-page {
+    .hero {
+      padding: 1rem;
+      
+      .hero-content {
+        padding: 0.5rem;
+      }
+    }
+
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+      
+      button {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    .features {
+      grid-template-columns: 1fr;
+      padding: 2rem 1rem;
+    }
+
+    .steps {
+      grid-template-columns: 1fr;
+    }
+
+    .testimonial-grid {
+      grid-template-columns: 1fr;
     }
   }
 }
