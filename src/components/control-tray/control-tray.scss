@@ -150,67 +150,86 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  padding: 32px;
+  gap: 32px;
+  padding: 48px;
   
   .welcome-message {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 16px 24px;
-    border-radius: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 20px 32px;
+    border-radius: 20px;
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.02),
+      0 8px 24px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.03),
+        0 12px 32px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.8);
     }
     
     svg {
       color: var(--Purple-500);
+      width: 24px;
+      height: 24px;
+      transition: transform 0.2s ease;
     }
     
     span {
-      font-weight: 500;
+      font-weight: 600;
       color: var(--Neutral-90);
-      font-size: 16px;
-      letter-spacing: -0.01em;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
     }
   }
   
   .start-button {
-    width: 64px;
-    height: 64px;
+    width: 72px;
+    height: 72px;
     background: linear-gradient(135deg, #9b87f5 0%, #6d8eff 100%);
     color: white;
     border: none;
     border-radius: 50%;
-    box-shadow: 0 8px 24px rgba(155, 135, 245, 0.25);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 2px 4px rgba(155, 135, 245, 0.1),
+      0 12px 32px rgba(155, 135, 245, 0.25);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transform: translateY(0);
     
     &:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 12px 32px rgba(155, 135, 245, 0.35);
+      transform: translateY(-3px) scale(1.05);
       background: linear-gradient(135deg, #8a6df5 0%, #5d7eff 100%);
+      box-shadow: 
+        0 4px 6px rgba(155, 135, 245, 0.15),
+        0 16px 40px rgba(155, 135, 245, 0.35);
     }
     
     &:active {
       transform: translateY(0) scale(0.95);
+      box-shadow: 
+        0 2px 4px rgba(155, 135, 245, 0.1),
+        0 8px 24px rgba(155, 135, 245, 0.2);
     }
     
     svg {
-      width: 24px;
-      height: 24px;
-      margin-left: 2px;
+      width: 28px;
+      height: 28px;
+      margin-left: 3px;
+      transition: transform 0.2s ease;
     }
   }
 }
