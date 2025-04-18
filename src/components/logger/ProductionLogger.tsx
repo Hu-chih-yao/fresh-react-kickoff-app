@@ -1,10 +1,25 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 import { useLoggerStore } from "../../lib/store-logger";
 import { MessageCircle } from "lucide-react";
 import "./production-logger.scss";
-import { ServerContent, ModelTurn } from "../../multimodal-live-types";
+import { 
+  ServerContent, 
+  ModelTurn, 
+  StreamingLog,
+  isServerContentMessage,
+} from "../../multimodal-live-types";
+
+type UserMessage = {
+  userMessage: {
+    text: string;
+  };
+};
+
+type ServerContentType = {
+  serverContent: ServerContent;
+};
 
 export default function ProductionLogger() {
   const { connected } = useLiveAPIContext();
@@ -52,7 +67,8 @@ export default function ProductionLogger() {
         const date = new Date(log.date);
         const time = date.toLocaleTimeString();
 
-        if (log.type === "userMessage" && "userMessage" in log.message) {
+        if (log.type === "userMessage" && typeof log.message === "object" && log.message !== null && "userMessage" in log.message) {
+          const userMessage = (log.message as UserMessage).userMessage;
           return (
             <div key={index} className="conversation-entry user-entry">
               <div className="entry-header">
@@ -60,13 +76,14 @@ export default function ProductionLogger() {
                 <span className="entry-time">{time}</span>
               </div>
               <div className="entry-content">
-                <p>{log.message.userMessage.text}</p>
+                <p>{userMessage.text}</p>
               </div>
             </div>
           );
         }
 
-        if (log.type === "serverContent" && "serverContent" in log.message) {
+        if (log.type === "serverContent" && typeof log.message === "object" && log.message !== null && "serverContent" in log.message) {
+          const serverContent = (log.message as ServerContentType).serverContent;
           return (
             <div key={index} className="conversation-entry ai-entry">
               <div className="entry-header">
@@ -74,7 +91,7 @@ export default function ProductionLogger() {
                 <span className="entry-time">{time}</span>
               </div>
               <div className="entry-content">
-                {renderMessageContent(log.message.serverContent)}
+                {renderMessageContent(serverContent)}
               </div>
             </div>
           );

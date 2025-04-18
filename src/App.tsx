@@ -39,14 +39,20 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
+  // Track if the session has started
+  const [sessionStarted, setSessionStarted] = useState(false);
+
+  const handleSessionStart = () => {
+    setSessionStarted(true);
+  };
 
   return (
     <div className="App">
       <LiveAPIProvider url={uri} apiKey={API_KEY}>
         <SoapNoteProvider>
-          <div className="streaming-console">
-            <SidePanel />
-            <main>
+          <div className={cn("streaming-console", { "session-active": sessionStarted })}>
+            {sessionStarted && <SidePanel />}
+            <main className={cn({ "centered-view": !sessionStarted })}>
               <div className="main-app-area">
                 {/* APP goes here */}
                 <Altair />
@@ -64,6 +70,7 @@ function App() {
                 videoRef={videoRef}
                 supportsVideo={true}
                 onVideoStreamChange={setVideoStream}
+                onConnect={handleSessionStart}
               />
             </main>
           </div>

@@ -1,3 +1,4 @@
+
 import cn from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
@@ -183,8 +184,14 @@ export default function SidePanel() {
     }
   };
 
+  // Animation classes for the panel
+  const panelClasses = cn("side-panel", {
+    "open": open,
+    "animate-slide-in": connected,
+  });
+
   return (
-    <div className={`side-panel ${open ? "open" : ""}`}>
+    <div className={panelClasses}>
       <header className="top">
         <h2>
           {activeTab === PanelTab.CHAT ? 'Chat History' : 'Medical Note'}

@@ -32,6 +32,7 @@ export type ControlTrayProps = {
   children?: ReactNode;
   supportsVideo: boolean;
   onVideoStreamChange?: (stream: MediaStream | null) => void;
+  onConnect?: () => void;
 };
 
 type MediaStreamButtonProps = {
@@ -63,6 +64,7 @@ function ControlTray({
   children,
   onVideoStreamChange = () => {},
   supportsVideo,
+  onConnect,
 }: ControlTrayProps) {
   const videoStreams = [useWebcam(), useScreenCapture()];
   const [activeVideoStream, setActiveVideoStream] =
@@ -162,6 +164,9 @@ function ControlTray({
   
   const handleConnect = () => {
     setInitialView(false);
+    if (onConnect) {
+      onConnect();
+    }
     connect();
   };
 
