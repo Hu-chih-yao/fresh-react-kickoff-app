@@ -11,12 +11,13 @@ import {
   ClientContentMessage,
   ToolCallMessage,
   ToolResponseMessage,
+  Content,
+  Part,
+  ModelTurn,
   isModelTurn
 } from '../../multimodal-live-types';
-import { Part } from '@google/generative-ai';
 import cn from 'classnames';
 
-// Create a type for our clean conversation entries
 type ConversationEntry = {
   id: number;
   type: 'user' | 'ai' | 'tool' | 'tool-response';
@@ -91,18 +92,14 @@ const getPatientFriendlyToolMessage = (toolName: string, args?: any): React.Reac
   );
 };
 
-// Hide code components and only show text
 const RenderPart = ({ part }: { part: Part }) => {
-  if (part.text && part.text.length) {
-    // Ignore messages that appear to be code or technical info
+  if ('text' in part && part.text && part.text.length) {
     if (part.text.includes('print(') || part.text.startsWith('Code:') || 
         part.text.includes('Result:') || part.text.includes('OUTCOME_')) {
       return null;
     }
     return <p className="part part-text">{part.text}</p>;
   }
-  
-  // Don't show code or other components in simple mode
   return null;
 };
 
@@ -126,35 +123,26 @@ const ProductionLogger: React.FC = () => {
 
     const processedConversation: ConversationEntry[] = [];
     const uniqueKeys = new Set<string>();
-    
-    // Track "thinking" state
     let aiResponseInProgress = false;
     
     logs.forEach((log, index) => {
-      // Generate a unique key for this message
-      const logType = log.type;
       const message = log.message;
       const timestamp = log.date;
       
       if (isClientContentMessage(message)) {
-        // Handle user messages
         const { clientContent } = message as ClientContentMessage;
-        const { turns } = clientContent;
+        if (!clientContent.turns || clientContent.turns.length === 0) return;
         
-        // Skip empty messages
-        if (!turns || turns.length === 0) return;
-        
-        const parts = turns.flatMap(turn => 
-          turn.parts.filter(part => !(part.text && part.text.trim() === ""))
+        const parts = clientContent.turns.flatMap(turn => 
+          turn.parts.filter(part => 'text' in part && part.text && part.text.trim() !== "")
         );
         
-        // If no meaningful parts, skip
         if (parts.length === 0) return;
         
         const userMessageContent = (
           <div className="user-message">
             {parts.map((part, j) => (
-              <RenderPart part={part} key={`user-part-${j}`} />
+              <RenderPart key={`user-part-${j}`} part={part} />
             ))}
           </div>
         );
@@ -168,29 +156,19 @@ const ProductionLogger: React.FC = () => {
             content: userMessageContent,
             timestamp
           });
-          
-          // When user message is sent, AI is thinking
           aiResponseInProgress = true;
           setIsThinking(true);
         }
       } 
       else if (isServerContentMessage(message)) {
-        // AI responses
-        const serverContent = (message as ServerContentMessage).serverContent;
+        const { serverContent } = message as ServerContentMessage;
         
         if (isModelTurn(serverContent)) {
-          // This is an AI response
-          const { modelTurn } = serverContent;
-          const { parts } = modelTurn;
-          
-          // Ignore empty messages
+          const parts = serverContent.modelTurn.parts;
           if (!parts || parts.length === 0) return;
           
-          // Only keep parts that contain actual text content (not code)
           const filteredParts = parts.filter(part => {
-            if (!part.text || part.text.trim() === "") return false;
-            
-            // Skip parts that look like code or technical information
+            if (!('text' in part) || !part.text || part.text.trim() === "") return false;
             if (part.text.includes('print(') || 
                 part.text.startsWith('Code:') || 
                 part.text.includes('Result:') || 
@@ -198,30 +176,18 @@ const ProductionLogger: React.FC = () => {
                 part.text.includes('default_api')) {
               return false;
             }
-            
             return true;
           });
           
-          // If no visible parts remain after filtering, skip this message entirely
           if (filteredParts.length === 0) return;
           
           const aiMessageContent = (
             <div className="ai-message">
               {filteredParts.map((part, j) => (
-                <RenderPart part={part} key={`ai-part-${j}`} />
+                <RenderPart key={`ai-part-${j}`} part={part} />
               ))}
             </div>
           );
-          
-          // Skip adding empty AI messages that have no visible content
-          const hasVisibleContent = filteredParts.some(part => 
-            part.text && !part.text.includes('print(') && 
-            !part.text.startsWith('Code:') && 
-            !part.text.includes('Result:') && 
-            !part.text.includes('OUTCOME_')
-          );
-          
-          if (!hasVisibleContent) return;
           
           const key = `ai-${timestamp.getTime()}-${index}`;
           if (!uniqueKeys.has(key)) {
@@ -232,16 +198,13 @@ const ProductionLogger: React.FC = () => {
               content: aiMessageContent,
               timestamp
             });
-            
-            // AI has responded, no longer thinking
             aiResponseInProgress = false;
             setIsThinking(false);
-            setLastToolType(null); // Reset tool type after AI responds
+            setLastToolType(null);
           }
         }
       }
       else if (isToolCallMessage(message)) {
-        // Tool usage
         const { toolCall } = message as ToolCallMessage;
         
         if (!toolCall.functionCalls || toolCall.functionCalls.length === 0) return;
@@ -271,18 +234,13 @@ const ProductionLogger: React.FC = () => {
       }
     });
     
-    // Sort by timestamp
     processedConversation.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-    
     setConversation(processedConversation);
     
-    // Update thinking state based on the last log message
     const latestLog = logs[logs.length - 1];
     if (latestLog && isServerContentMessage(latestLog.message)) {
-      // If we got a server message, we're no longer thinking
       setIsThinking(false);
     }
-    
   }, [logs]);
 
   return (
