@@ -8,10 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig(({ mode }) => ({
-  plugins: [
-    react(),
-    // Remove the componentTagger plugin since it's causing ESM issues
-  ].filter(Boolean),
+  plugins: [react()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
