@@ -171,17 +171,32 @@ function ControlTray({
         <canvas style={{ display: "none" }} ref={renderCanvasRef} />
         <div className="initial-tray">
           <div className="welcome-message">
-            <MessageCircle size={24} />
-            <span>Connect with AI Doctor</span>
+            <MessageCircle size={32} />
+            <span>How can I assist you today?</span>
           </div>
           
-          <button
-            ref={connectButtonRef}
-            className="action-button connect-toggle start-button"
-            onClick={handleConnect}
-          >
-            <Play size={20} />
-          </button>
+          <div className="input-container">
+            <input 
+              type="text"
+              className="search-field"
+              placeholder="Ask me anything..."
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleConnect();
+                }
+              }}
+            />
+            <div className="actions-row">
+              <button className="action-pill">
+                <Search size={16} />
+                DeepSearch
+              </button>
+              <button className="action-pill">
+                <Lightbulb size={16} />
+                Think
+              </button>
+            </div>
+          </div>
         </div>
       </section>
     );
