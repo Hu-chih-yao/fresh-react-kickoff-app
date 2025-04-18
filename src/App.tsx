@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2024 Google LLC
  *
@@ -21,9 +22,7 @@ import { SoapNoteProvider } from "./contexts/SoapNoteContext";
 import SidePanel from "./components/side-panel/SidePanel";
 import { Altair } from "./components/altair/Altair";
 import ControlTray from "./components/control-tray/ControlTray";
-import LandingPage from "./components/landing/LandingPage";
 import cn from "classnames";
-import { MessageCircle, Play } from "lucide-react";
 
 // Safely access Vite environment variables with fallback
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
@@ -40,11 +39,6 @@ function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
   // either the screen capture, the video or null, if null we hide it
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
-  const [showApp, setShowApp] = useState(false);
-
-  if (!showApp) {
-    return <LandingPage onStartConsultation={() => setShowApp(true)} />;
-  }
 
   return (
     <div className="App">

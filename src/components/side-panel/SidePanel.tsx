@@ -17,7 +17,7 @@ enum PanelTab {
 
 export default function SidePanel() {
   const { connected, client, error, connect } = useLiveAPIContext();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const loggerRef = useRef<HTMLDivElement>(null);
   const loggerLastHeightRef = useRef<number>(-1);
   const { log, logs } = useLoggerStore();
