@@ -7,17 +7,8 @@ import { dirname, resolve } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export default defineConfig(({ mode }) => ({
-  plugins: [
-    react({
-      babel: {
-        babelrc: false,
-        configFile: false,
-      }
-    }),
-    // We'll comment out the componentTagger import for now to fix the ESM issue
-    // mode === 'development' && componentTagger(),
-  ].filter(Boolean),
+export default defineConfig({
+  plugins: [react()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
@@ -30,10 +21,20 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     target: 'esnext',
+    minify: 'terser',
+    sourcemap: true,
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+        },
+      },
+    },
   },
   optimizeDeps: {
     esbuildOptions: {
       target: 'esnext',
     },
   },
-}));
+});
