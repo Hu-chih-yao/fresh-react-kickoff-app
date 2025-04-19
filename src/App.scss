@@ -1,11 +1,5 @@
 :root {
-  // Update color scheme to match the image
-  --primary-gradient: linear-gradient(135deg, #9747FF 0%, #4E6AFF 100%);
-  --text-gradient: linear-gradient(135deg, #9747FF 0%, #4E6AFF 100%);
   --text: #1D1D1F;
-  --background: #FFFFFF;
-  --border-stroke: #DCDEE4;
-  
   --gray-200: #b4b8bb;
   --gray-300: #86868B;
   --gray-500: #5f6368;
@@ -14,6 +8,7 @@
   --gray-800: #171717;
   --gray-900: #111111;
   --gray-1000: #0a0a0a;
+  --border-stroke: #DCDEE4;
   --accent-blue: rgb(161, 228, 242);
   --accent-blue-active-bg: #001233;
   --accent-blue-active: #98beff;
@@ -24,6 +19,9 @@
   --blue-30: #99beff;
 
   --accent-red: #ff4600;
+
+  --background: #FFFFFF;
+  --color: var(--text);
 
   scrollbar-color: var(--gray-600) var(--background);
   scrollbar-width: thin;
@@ -54,11 +52,6 @@
   --Red-700: #bd3000;
   
   --primary-purple: #8A2BE2;
-
-  // Add mobile-specific variables
-  --safe-area-inset-top: env(safe-area-inset-top, 0px);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-  --mobile-header-height: 60px;
 }
 
 body {
@@ -128,14 +121,8 @@ body {
   color: var(--text);
   display: flex;
   height: 100vh;
-  height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
   width: 100vw;
   border-top: 1px solid var(--border-stroke);
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding-top: var(--safe-area-inset-top);
-  }
 
   a,
   a:visited,
@@ -161,10 +148,6 @@ body {
     gap: 1rem;
     max-width: 100%;
     overflow: hidden;
-    
-    @media (max-width: 768px) {
-      padding: 1rem;
-    }
   }
 
   .main-app-area {
@@ -191,9 +174,4 @@ body {
   max-height: fit-content;
   border: 1px solid var(--border-stroke);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  
-  @media (max-width: 768px) {
-    max-width: 100%;
-    border-radius: 12px;
-  }
 }
